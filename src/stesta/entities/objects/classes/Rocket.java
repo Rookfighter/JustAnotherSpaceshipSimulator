@@ -6,6 +6,7 @@ import org.jbox2d.dynamics.World;
 
 import stesta.entities.objects.AMovingSpaceObject;
 import stesta.entities.objects.IRocket;
+import stesta.entities.objects.ObjectTypes;
 
 public class Rocket extends AMovingSpaceObject implements IRocket{
 
@@ -13,7 +14,7 @@ public class Rocket extends AMovingSpaceObject implements IRocket{
 	
 	public Rocket(World p_world)
 	{
-		super(p_world);
+		super(ObjectTypes.ROCKET, p_world);
 		setDirection(0.0f);
 	}
 

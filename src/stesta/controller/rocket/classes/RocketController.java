@@ -21,8 +21,31 @@ public class RocketController extends AObjectController<IRocket> implements IRoc
 	public void executeLogics()
 	{
 		executeControls();
+		turnRocket();
 	}
-
+	
+	private void executeControls()
+	{
+		synchronized(controlQueue)
+		{
+			while(!controlQueue.isEmpty())
+				controlQueue.poll().executeLogics();
+		}
+	}
+	
+	private void turnRocket()
+	{
+		float directionDiff = getDirectionDiff();
+		
+		float angularVelocity = directionDiff / getSpace().getTimeStep();
+		getControlledObject().getBody().setAngularVelocity(angularVelocity);
+	}
+	
+	private float getDirectionDiff()
+	{
+		return getControlledObject().getBody().getAngle() - getControlledObject().getDirection();
+	}
+	
 	@Override
 	public void turnRight()
 	{
@@ -49,14 +72,7 @@ public class RocketController extends AObjectController<IRocket> implements IRoc
 		}
 	}
 	
-	private void executeControls()
-	{
-		synchronized(controlQueue)
-		{
-			while(!controlQueue.isEmpty())
-				controlQueue.poll().executeLogics();
-		}
-	}
+	
 
 	
 

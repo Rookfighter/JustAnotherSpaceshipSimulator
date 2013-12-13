@@ -10,11 +10,13 @@ import org.jbox2d.dynamics.World;
 public abstract class ASpaceObject implements ISpaceObject {
 
 	private Body body;
+	private ObjectTypes type;
 	
-	public ASpaceObject(final World p_world)
+	public ASpaceObject(final ObjectTypes p_type, final World p_world)
 	{
 		body = p_world.createBody(getBodyDef());
 		body.createFixture(getFixtureDef());
+		type = p_type;
 	}
 	
 	protected abstract BodyDef getBodyDef();
@@ -26,9 +28,16 @@ public abstract class ASpaceObject implements ISpaceObject {
 		return body;
 	}
 	
+	@Override
 	public Vec2 getPosition()
 	{
 		return body.getPosition();
+	}
+	
+	@Override
+	public ObjectTypes type()
+	{
+		return type;
 	}
 	
 }

@@ -15,10 +15,12 @@ public class Space implements ISpace {
 	
 	private static final int DEF_WIDTH = 1000;
 	private static final int DEF_HEIGHT = 1000;
+	private static final float DEF_TIME_STEP = 1f / 60f;
 	
 	private Dimension2DI dimension;
 	private World physicsWorld;
 	private List<ISpaceObject> spaceObjectList;
+	private float timeStep;
 
 	public Space()
 	{
@@ -28,6 +30,7 @@ public class Space implements ISpace {
 	public Space(final Dimension2DI p_dimension)
 	{
 		dimension = p_dimension;
+		timeStep = DEF_TIME_STEP;
 		spaceObjectList = new LinkedList<ISpaceObject>();
 		intiPhysicsWorld();
 	}
@@ -75,6 +78,20 @@ public class Space implements ISpace {
 	public World getPhysicsWorld()
 	{
 		return physicsWorld;
+	}
+
+	@Override
+	public void setTimeStep(float p_secs)
+	{
+		if(p_secs <= 0)
+			throw new IllegalArgumentException("TimeStep of Space cannot be zero or negative.");
+		timeStep = p_secs;
+	}
+
+	@Override
+	public float getTimeStep()
+	{
+		return timeStep;
 	}
 
 }

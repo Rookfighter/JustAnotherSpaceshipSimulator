@@ -20,4 +20,7 @@ public interface ISpace {
 	Dimension2DI getDimension();
 	
 	World getPhysicsWorld();
+	
+	void setTimeStep(final float p_secs);
+	float getTimeStep();
 }

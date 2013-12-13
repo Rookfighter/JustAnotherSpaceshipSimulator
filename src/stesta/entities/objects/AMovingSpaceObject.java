@@ -5,9 +5,9 @@ import org.jbox2d.dynamics.World;
 
 public abstract class AMovingSpaceObject extends ASpaceObject implements IMovingSpaceObject {
 
-	public AMovingSpaceObject(World p_world)
+	public AMovingSpaceObject(final ObjectTypes p_type, final World p_world)
 	{
-		super(p_world);
+		super(p_type, p_world);
 	}
 	
 	public Vec2 getVelocity()
