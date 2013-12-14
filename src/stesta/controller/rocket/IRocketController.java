@@ -7,6 +7,7 @@ public interface IRocketController extends IObjectController<IRocket> {
 	
 	void turnRight();
 	void turnLeft();
+	void stopTurning();
 	
 	void accelerate();
 }

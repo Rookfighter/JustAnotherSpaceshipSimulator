@@ -5,17 +5,18 @@ import java.util.Map;
 
 import lib.graphics.IDrawable;
 import stesta.entities.objects.ISpaceObject;
-import stesta.entities.objects.ObjectTypes;
+import stesta.entities.objects.EObjectTypes;
 import stesta.view.IDrawableFactory;
 
 public class DrawableMap {
 
-	private Map<ObjectTypes, IDrawableFactory> typeMap;
+	private Map<EObjectTypes, IDrawableFactory> typeMap;
 	
 	public DrawableMap()
 	{
-		typeMap = new HashMap<ObjectTypes, IDrawableFactory>();
-		typeMap.put(ObjectTypes.ROCKET, new RocketSpriteFactory());
+		typeMap = new HashMap<EObjectTypes, IDrawableFactory>();
+		typeMap.put(EObjectTypes.ROCKET, new RocketSpriteFactory());
+		typeMap.put(EObjectTypes.STAR, new StarSpriteFactory());
 	}
 	
 	public IDrawable createDrawableFor(final ISpaceObject object)

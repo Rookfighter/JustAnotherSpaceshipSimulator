@@ -5,7 +5,7 @@ import stesta.entities.objects.IRocket;
 
 public class RocketTurnLeft extends ARocketControl{
 	
-	private static final float TURN_RAD = (float) Math.toRadians(30);
+	private static final float TURN_RAD = (float) Math.toRadians(7);
 
 	public RocketTurnLeft(IRocket p_rocket)
 	{
@@ -15,7 +15,9 @@ public class RocketTurnLeft extends ARocketControl{
 	@Override
 	public void executeLogics()
 	{
-		getRocket().setDirection(getRocket().getDirection() - TURN_RAD);
+		float angularVelocity = TURN_RAD / getSpace().getTimeStep();
+		
+		getControlledObject().getBody().setAngularVelocity(-angularVelocity);
 	}
 
 }

@@ -32,10 +32,10 @@ public class Space implements ISpace {
 		dimension = p_dimension;
 		timeStep = DEF_TIME_STEP;
 		spaceObjectList = new LinkedList<ISpaceObject>();
-		intiPhysicsWorld();
+		initPhysicsWorld();
 	}
 	
-	private void intiPhysicsWorld()
+	private void initPhysicsWorld()
 	{
 		Vec2 gravity = new Vec2(0.0f, 0.0f);
 		physicsWorld = new World(gravity);

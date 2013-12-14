@@ -5,8 +5,8 @@ import stesta.entities.world.ISpace;
 
 public class SpaceController implements ISpaceController {
 
-	private static final int DEF_VEL_ITERATIONS = 5;
-	private static final int DEF_POS_ITERATIONS = 5;
+	private static final int DEF_VEL_ITERATIONS = 6;
+	private static final int DEF_POS_ITERATIONS = 2;
 	
 	private ISpace space;
 	

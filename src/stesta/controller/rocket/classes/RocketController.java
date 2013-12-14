@@ -21,7 +21,7 @@ public class RocketController extends AObjectController<IRocket> implements IRoc
 	public void executeLogics()
 	{
 		executeControls();
-		turnRocket();
+		//System.out.printf("POS: %.2f/%.2f\n", getControlledObject().getPosition().x, getControlledObject().getPosition().y);
 	}
 	
 	private void executeControls()
@@ -33,35 +33,36 @@ public class RocketController extends AObjectController<IRocket> implements IRoc
 		}
 	}
 	
-	private void turnRocket()
-	{
-		float directionDiff = getDirectionDiff();
-		
-		float angularVelocity = directionDiff / getSpace().getTimeStep();
-		getControlledObject().getBody().setAngularVelocity(angularVelocity);
-	}
-	
-	private float getDirectionDiff()
-	{
-		return getControlledObject().getBody().getAngle() - getControlledObject().getDirection();
-	}
-	
 	@Override
 	public void turnRight()
 	{
-		addControl(new RocketTurnRight(getControlledObject()));
+		IRocketControl control = new RocketTurnRight(getControlledObject());
+		control.setSpace(getSpace());
+		addControl(control);
 	}
 
 	@Override
 	public void turnLeft()
 	{
-		addControl(new RocketTurnLeft(getControlledObject()));
+		IRocketControl control = new RocketTurnLeft(getControlledObject());
+		control.setSpace(getSpace());
+		addControl(control);
 	}
 
 	@Override
 	public void accelerate()
 	{
-		addControl(new RocketAccelerate(getControlledObject()));
+		IRocketControl control = new RocketAccelerate(getControlledObject());
+		control.setSpace(getSpace());
+		addControl(control);
+	}
+	
+	@Override
+	public void stopTurning()
+	{
+		IRocketControl control = new RocketStopTurning(getControlledObject());
+		control.setSpace(getSpace());
+		addControl(control);
 	}
 	
 	private void addControl(final IRocketControl p_control)

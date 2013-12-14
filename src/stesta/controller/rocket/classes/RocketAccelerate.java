@@ -7,7 +7,7 @@ import stesta.entities.objects.IRocket;
 
 public class RocketAccelerate extends ARocketControl {
 
-	private static final float ACC_FORCE = 1.0f;
+	private static final float ACC_FORCE = 10.0f;
 	
 	public RocketAccelerate(IRocket p_rocket)
 	{
@@ -17,10 +17,10 @@ public class RocketAccelerate extends ARocketControl {
 	@Override
 	public void executeLogics()
 	{
-		float dx = (float) Math.cos(getRocket().getDirection()) * ACC_FORCE;
-		float dy = (float) Math.sin(getRocket().getDirection()) * ACC_FORCE;
+		float dx = (float) Math.cos(getControlledObject().getDirection()) * ACC_FORCE;
+		float dy = (float) Math.sin(getControlledObject().getDirection()) * ACC_FORCE;
 		Vec2 force = new Vec2(dx,dy);
-		getRocket().getBody().applyForceToCenter(force);
+		getControlledObject().getBody().applyForceToCenter(force);
 	}
 
 }

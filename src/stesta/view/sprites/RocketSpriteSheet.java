@@ -7,9 +7,9 @@ public class RocketSpriteSheet extends SpriteSheet{
 
 	private static final RocketSpriteSheet instance = new RocketSpriteSheet();
 	
-	public RocketSpriteSheet()
+	private RocketSpriteSheet()
 	{
-		super(new Dimension2DI(32, 32), "images\\rocket.png");
+		super(new Dimension2DI(32, 32), "images/rocket.png");
 	}
 	
 	public static RocketSpriteSheet getInstance()

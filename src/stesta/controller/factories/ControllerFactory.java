@@ -10,7 +10,6 @@ import stesta.entities.factories.EntityFactory;
 
 public class ControllerFactory {
 
-	
 	private EntityFactory entityFactory;
 	private ISpaceController spaceController;
 	private IGameController gameController;

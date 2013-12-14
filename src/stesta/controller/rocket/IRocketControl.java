@@ -1,10 +1,8 @@
 package stesta.controller.rocket;
 
-import stesta.controller.IController;
+import stesta.controller.IObjectController;
 import stesta.entities.objects.IRocket;
 
-public interface IRocketControl extends IController{
+public interface IRocketControl extends IObjectController<IRocket>{
 	
-	void setRocket(final IRocket p_rocket);
-	IRocket getRocket();
 }

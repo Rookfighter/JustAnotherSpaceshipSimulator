@@ -9,6 +9,6 @@ public interface ISpaceObject {
 	
 	Body getBody();
 	
-	ObjectTypes type();
+	EObjectTypes type();
 	
 }

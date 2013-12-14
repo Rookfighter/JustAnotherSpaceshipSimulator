@@ -1,12 +1,13 @@
 package stesta.controller;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import lib.utils.doubl.Dimension2DF;
 import stesta.entities.objects.ISpaceObject;
 import stesta.entities.world.ISpace;
 
-public abstract class AObjectController<E> implements IObjectController<E> {
+public abstract class AObjectController<E extends ISpaceObject> implements IObjectController<E> {
 
 	private ISpace space;
 	private E controlledObject;
@@ -36,17 +37,45 @@ public abstract class AObjectController<E> implements IObjectController<E> {
 	}
 
 	@Override
-	public List<ISpaceObject> getObjectsInRange(double p_radius)
+	public List<ISpaceObject> getObjectsInRange(final float p_radius)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		List<ISpaceObject> result = new LinkedList<ISpaceObject>();
+		
+		for(ISpaceObject object : getSpace().getObjects())
+			if(objectIsInRadius(object, p_radius))
+				result.add(object);
+		
+		return result;
+	}
+	
+	private boolean objectIsInRadius(final ISpaceObject p_object, final float radius)
+	{
+		float diffx = getControlledObject().getPosition().x - p_object.getPosition().x;
+		float diffy = getControlledObject().getPosition().y - p_object.getPosition().y;
+		float diffSq = diffx * diffx + diffy * diffy;
+		
+		return diffSq <= (radius * radius);
 	}
 
 	@Override
 	public List<ISpaceObject> getObjectsInRect(Dimension2DF p_dimension)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		List<ISpaceObject> result = new LinkedList<ISpaceObject>();
+		for(ISpaceObject object : getSpace().getObjects())
+			if(objectIsInRect(object, p_dimension))
+				result.add(object);
+		
+		return result;
+	}
+	
+	private boolean objectIsInRect(final ISpaceObject p_object, final Dimension2DF p_dimension)
+	{
+		float diffx = Math.abs(getControlledObject().getPosition().x - p_object.getPosition().x);
+		float diffy = Math.abs(getControlledObject().getPosition().y - p_object.getPosition().y);
+		boolean isInWidth = diffx <= (p_dimension.Width() / 2);
+		boolean isInHeight = diffy <= (p_dimension.Height() / 2);
+		
+		return isInWidth && isInHeight;
 	}
 
 }
