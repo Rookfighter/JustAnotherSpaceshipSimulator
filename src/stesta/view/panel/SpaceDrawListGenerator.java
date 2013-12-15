@@ -9,7 +9,6 @@ import java.util.Map;
 import stesta.controller.rocket.IRocketController;
 import stesta.entities.objects.IRocket;
 import stesta.entities.objects.ISpaceObject;
-import stesta.entities.objects.classes.Rocket;
 import lib.graphics.IDrawable;
 import lib.graphics.panel.DrawOrderComparator;
 import lib.graphics.panel.IDrawListGenerator;
@@ -51,7 +50,7 @@ public class SpaceDrawListGenerator implements IDrawListGenerator {
 	private void calculateSizeFactor()
 	{
 		ISprite sprite = (ISprite) getDrawableFor(player.getControlledObject());
-		sizeFactor = sprite.getDimension().Width() / Rocket.DEF_RADIUS;
+		sizeFactor = (sprite.getDimension().Width() / player.getControlledObject().getRadius()) / 2;
 	}
 
 	@Override

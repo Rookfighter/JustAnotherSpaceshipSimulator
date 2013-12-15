@@ -17,6 +17,8 @@ public class Rocket extends AMovingSpaceObject implements IRocket{
 	private static final float DEF_DENSITY = 0.6f;
 	private static final float DEF_RESTITUTION = 0.5f;
 	
+	private float radius;
+	
 	public Rocket(World p_world)
 	{
 		super(EObjectTypes.ROCKET, p_world);
@@ -36,9 +38,10 @@ public class Rocket extends AMovingSpaceObject implements IRocket{
 	@Override
 	protected FixtureDef getFixtureDef()
 	{
+		radius = DEF_RADIUS;
 		FixtureDef result = new FixtureDef();
 		CircleShape cs = new CircleShape();
-		cs.setRadius(DEF_RADIUS);
+		cs.setRadius(radius);
 		
 		result.shape = cs;
 		result.density = DEF_DENSITY;
@@ -52,6 +55,12 @@ public class Rocket extends AMovingSpaceObject implements IRocket{
 	public float getDirection()
 	{
 		return getBody().getAngle();
+	}
+	
+	@Override
+	public float getRadius()
+	{
+		return radius;
 	}
 
 }

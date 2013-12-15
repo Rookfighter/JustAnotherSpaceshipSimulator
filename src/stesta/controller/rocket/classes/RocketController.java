@@ -11,7 +11,7 @@ public class RocketController extends AObjectController<IRocket> implements IRoc
 
 	private static final float DEF_LEFT_ANG_VEL = (float) Math.toRadians(7);
 	private static final float DEF_RIGHT_ANG_VEL = (float) Math.toRadians(7);
-	private static final float DEF_ACC_FORCE = 7.0f;
+	private static final float DEF_ACC_FORCE = 10.0f;
 	
 	private float angularVelocity;
 	private float accelerateForce;

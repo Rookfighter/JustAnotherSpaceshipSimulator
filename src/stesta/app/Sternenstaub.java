@@ -19,7 +19,7 @@ public class Sternenstaub {
 	}
 	
 	
-	private static final int DEF_STAR_COUNT = 100000;
+	private static final int DEF_STAR_COUNT = 30000;
 	private GameFactory gameFactory;
 	
 	private Sternenstaub()
