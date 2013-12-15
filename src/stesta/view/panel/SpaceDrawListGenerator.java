@@ -50,7 +50,7 @@ public class SpaceDrawListGenerator implements IDrawListGenerator {
 	private void calculateSizeFactor()
 	{
 		ISprite sprite = (ISprite) getDrawableFor(player.getControlledObject());
-		sizeFactor = (sprite.getDimension().Width() / player.getControlledObject().getRadius()) / 2;
+		sizeFactor = ((sprite.getDimension().Width() / 2) / player.getControlledObject().getRadius());
 	}
 
 	@Override
