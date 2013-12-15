@@ -3,6 +3,8 @@ package stesta.app;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import org.jbox2d.common.Vec2;
+
 import stesta.app.factories.GameFactory;
 import lib.app.GameThread;
 
@@ -28,6 +30,7 @@ public class Sternenstaub {
 	private void initializeGame()
 	{
 		gameFactory.getViewFactory().getControllerFactory().getEntityFactory().generateStars(DEF_STAR_COUNT);
+		gameFactory.getViewFactory().getControllerFactory().getEntityFactory().createRocket().getBody().setTransform(new Vec2(10.0f,10.0f), 0);
 	}
 	
 	private void startGame()
