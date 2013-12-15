@@ -15,16 +15,32 @@ public class RocketActionUp extends ARocketAction{
 		switch(p_event.getKeyCode())
 		{
 			case KeyEvent.VK_A:
-			case KeyEvent.VK_D:	
-				stopTurning();
+				stopTurningLeft();
 				break;
+			case KeyEvent.VK_D:	
+				stopTurningRight();
+				break;
+			case KeyEvent.VK_W:
+				stopAccelerating();
 		}
 	}
 
-	private void stopTurning()
+	private void stopAccelerating()
 	{
-		getRocketController().stopTurning();
+		getRocketController().stopAccelerate();
 	}
+
+	private void stopTurningRight()
+	{
+		getRocketController().stopTurnRight();
+		
+	}
+
+	private void stopTurningLeft()
+	{
+		getRocketController().stopTurnLeft();
+	}
+
 
 
 }

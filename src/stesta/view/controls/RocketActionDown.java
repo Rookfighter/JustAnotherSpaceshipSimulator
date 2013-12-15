@@ -12,12 +12,17 @@ public class RocketActionDown extends ARocketAction{
 	@Override
 	public void process(KeyEvent p_event)
 	{
-		if(p_event.getKeyCode() == KeyEvent.VK_W)
-			accelerate();
-		if(p_event.getKeyCode() == KeyEvent.VK_A)
-			turnLeft();
-		if(p_event.getKeyCode() == KeyEvent.VK_D)
-			turnRight();
+		switch(p_event.getKeyCode())
+		{
+			case KeyEvent.VK_A:
+				turnLeft();
+				break;
+			case KeyEvent.VK_D:	
+				turnRight();
+				break;
+			case KeyEvent.VK_W:
+				accelerate();
+		}
 	}
 	
 	private void accelerate()

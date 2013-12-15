@@ -6,8 +6,10 @@ import stesta.entities.objects.IRocket;
 public interface IRocketController extends IObjectController<IRocket> {
 	
 	void turnRight();
+	void stopTurnRight();
 	void turnLeft();
-	void stopTurning();
+	void stopTurnLeft();
 	
 	void accelerate();
+	void stopAccelerate();
 }

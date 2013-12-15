@@ -14,7 +14,7 @@ public class Rocket extends AMovingSpaceObject implements IRocket{
 
 	public static final float DEF_RADIUS = 0.5f;
 	private static final float DEF_FRICTION = 0.3f;
-	private static final float DEF_DENSITY = 0.1f;
+	private static final float DEF_DENSITY = 0.6f;
 	private static final float DEF_RESTITUTION = 0.5f;
 	
 	public Rocket(World p_world)
