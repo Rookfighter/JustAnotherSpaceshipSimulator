@@ -13,8 +13,12 @@ import lib.utils.integer.Position2DI;
 
 public class StarField implements IDrawable{
 
-	private int maxStarsPerRow = 3;
-	private int maxStarsPerColumn = 3;
+	private static final int PIXEL_PER_STAR = 200;
+	private static final int DEF_MAX_STARS_PER_ROW = 3;
+	private static final int DEF_MAX_STARS_PER_COLUMN = 3;
+	
+	private int maxStarsPerRow;
+	private int maxStarsPerColumn;
 	
 	private int drawOrder;
 	private Position2DI position;
@@ -30,6 +34,8 @@ public class StarField implements IDrawable{
 		starList = new LinkedList<Position2DI>();
 		removeList = new LinkedList<Position2DI>();
 		random = new Random();
+		maxStarsPerRow = DEF_MAX_STARS_PER_ROW;
+		maxStarsPerColumn = DEF_MAX_STARS_PER_COLUMN;
 		setDefaultDrawOrder();
 	}
 	
@@ -163,16 +169,10 @@ public class StarField implements IDrawable{
 	
 	public void assignDimension(final Dimension2DI p_dimension)
 	{
-		int diffx = p_dimension.Width() - dimension.Width();
-		int diffy = p_dimension.Height() - dimension.Height();
 		dimension.assign(p_dimension);
+		maxStarsPerColumn = dimension.Height() / PIXEL_PER_STAR;
+		maxStarsPerRow = dimension.Width() / PIXEL_PER_STAR;
 		refillField();
-		//if(diffx > 0)
-		//	createStarsOnRight(diffx);
-		//if(diffy > 0)
-		//	createStarsOnBot(diffy);
-		
-		//removeUnseenStars();
 	}
 	
 	private void refillField()
