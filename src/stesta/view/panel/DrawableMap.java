@@ -16,7 +16,6 @@ public class DrawableMap {
 	{
 		typeMap = new HashMap<EObjectTypes, IDrawableFactory>();
 		typeMap.put(EObjectTypes.ROCKET, new RocketSpriteFactory());
-		typeMap.put(EObjectTypes.STAR, new StarSpriteFactory());
 	}
 	
 	public IDrawable createDrawableFor(final ISpaceObject object)

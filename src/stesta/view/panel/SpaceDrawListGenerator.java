@@ -9,17 +9,20 @@ import java.util.Map;
 import stesta.controller.rocket.IRocketController;
 import stesta.entities.objects.IRocket;
 import stesta.entities.objects.ISpaceObject;
+import stesta.view.drawable.StarField;
 import lib.graphics.IDrawable;
 import lib.graphics.panel.DrawOrderComparator;
 import lib.graphics.panel.IDrawListGenerator;
 import lib.graphics.sprites.ISprite;
 import lib.utils.DeltaTime;
 import lib.utils.doubl.Dimension2DF;
+import lib.utils.integer.Dimension2DI;
+import lib.utils.integer.Position2DI;
 
 public class SpaceDrawListGenerator implements IDrawListGenerator {
 
-	private static final double DEF_WIDTH = 800;
-	private static final double DEF_HEIGHT = 600;
+	private static final int DEF_WIDTH = 800;
+	private static final int DEF_HEIGHT = 600;
 	
 	private DeltaTime delta;
 	private IRocketController player;
@@ -29,6 +32,7 @@ public class SpaceDrawListGenerator implements IDrawListGenerator {
 	private DrawableMap drawableGenerator;
 	private DrawOrderComparator comparator;
 	private float sizeFactor;
+	private StarField starField;
 	
 	public SpaceDrawListGenerator(final IRocketController p_player)
 	{
@@ -37,14 +41,18 @@ public class SpaceDrawListGenerator implements IDrawListGenerator {
 		fovDimension = new Dimension2DF();
 		comparator = new DrawOrderComparator();
 		drawableGenerator = new DrawableMap();
+		starField = new StarField();
 		
 		calculateSizeFactor();
-		setDimension(new Dimension2DF(DEF_WIDTH, DEF_HEIGHT));
+		setDimension(new Dimension2DI(DEF_WIDTH, DEF_HEIGHT));
 	}
 	
-	private void setDimension(final Dimension2DF p_dimension)
+	private void setDimension(final Dimension2DI p_dimension)
 	{
-		fovDimension.set(p_dimension.Width() / sizeFactor, p_dimension.Height() / sizeFactor);
+		double fovWidth = (double) (p_dimension.Width()) / sizeFactor;
+		double fovHeight = (double) (p_dimension.Height()) / sizeFactor;
+		fovDimension.set(fovWidth, fovHeight);
+		starField.assignDimension(p_dimension);
 	}
 	
 	private void calculateSizeFactor()
@@ -58,6 +66,7 @@ public class SpaceDrawListGenerator implements IDrawListGenerator {
 	{
 		drawList = new LinkedList<IDrawable>();
 		fillDrawList();
+		addPermanentDrawables();
 		Collections.sort(drawList, comparator);
 		return drawList;
 	}
@@ -117,6 +126,19 @@ public class SpaceDrawListGenerator implements IDrawListGenerator {
 		IRocket rocket = (IRocket) p_object;
 		sprite.setRotation(rocket.getDirection() - Math.toRadians(90));
 		
+	}
+	
+	private void addPermanentDrawables()
+	{
+		addStarField();
+	}
+	
+	private void addStarField()
+	{
+		int x = - (int) (player.getControlledObject().getPosition().x * sizeFactor);
+		int y = - (int) (player.getControlledObject().getPosition().y * sizeFactor);
+		starField.assignPosition(new Position2DI(x,y));
+		drawList.add(starField);
 	}
 	
 	@Override

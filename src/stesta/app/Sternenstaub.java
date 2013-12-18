@@ -19,7 +19,6 @@ public class Sternenstaub {
 	}
 	
 	
-	private static final int DEF_STAR_COUNT = 30000;
 	private GameFactory gameFactory;
 	
 	private Sternenstaub()
@@ -29,7 +28,6 @@ public class Sternenstaub {
 	
 	private void initializeGame()
 	{
-		gameFactory.getViewFactory().getControllerFactory().getEntityFactory().generateStars(DEF_STAR_COUNT);
 		gameFactory.getViewFactory().getControllerFactory().getEntityFactory().createRocket().getBody().setTransform(new Vec2(10.0f,10.0f), 0);
 	}
 	
