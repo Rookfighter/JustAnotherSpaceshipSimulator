@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import stesta.controller.rocket.IRocketController;
+import stesta.entities.objects.IAsteroid;
 import stesta.entities.objects.IRocket;
 import stesta.entities.objects.ISpaceObject;
 import stesta.view.drawable.StarField;
@@ -23,6 +24,7 @@ public class SpaceDrawListGenerator implements IDrawListGenerator {
 
 	private static final int DEF_WIDTH = 800;
 	private static final int DEF_HEIGHT = 600;
+	private static final int DEF_FOV_BUF = 200;
 	
 	private DeltaTime delta;
 	private IRocketController player;
@@ -49,8 +51,8 @@ public class SpaceDrawListGenerator implements IDrawListGenerator {
 	
 	private void setDimension(final Dimension2DI p_dimension)
 	{
-		double fovWidth = (double) (p_dimension.Width()) / sizeFactor;
-		double fovHeight = (double) (p_dimension.Height()) / sizeFactor;
+		double fovWidth = (double) (p_dimension.Width() + DEF_FOV_BUF) / sizeFactor;
+		double fovHeight = (double) (p_dimension.Height() + DEF_FOV_BUF) / sizeFactor;
 		fovDimension.set(fovWidth, fovHeight);
 		starField.assignDimension(p_dimension);
 	}
@@ -82,6 +84,7 @@ public class SpaceDrawListGenerator implements IDrawListGenerator {
 		IDrawable drawable = getDrawableFor(object);
 		setDrawablePosition(object, drawable);
 		setDrawableDirection(object, drawable);
+		setDrawableDimension(object, drawable);
 		drawable.setDefaultDrawOrder();
 		
 		drawList.add(drawable);
@@ -100,7 +103,7 @@ public class SpaceDrawListGenerator implements IDrawListGenerator {
 		return drawable;
 	}
 
-	private void setDrawablePosition(ISpaceObject p_object, IDrawable p_drawable)
+	private void setDrawablePosition(final ISpaceObject p_object, final IDrawable p_drawable)
 	{
 		if(!(p_drawable instanceof ISprite))
 			return;
@@ -114,17 +117,27 @@ public class SpaceDrawListGenerator implements IDrawListGenerator {
 		sprite.getPosition().set((int) (sizeFactor * x), (int) (sizeFactor * y));
 	}
 	
-	private void setDrawableDirection(ISpaceObject p_object, IDrawable p_drawable)
+	private void setDrawableDirection(final ISpaceObject p_object, final IDrawable p_drawable)
 	{
 		if(!(p_drawable instanceof ISprite))
 			return;
 		
-		if(!(p_object instanceof IRocket))
+		ISprite sprite = (ISprite) p_drawable;
+		sprite.setRotation(p_object.getBody().getAngle() - Math.toRadians(90));
+	}
+	
+	private void setDrawableDimension(final ISpaceObject p_object,final IDrawable p_drawable) 
+	{
+		if(!(p_drawable instanceof ISprite))
+			return;
+		
+		if(!(p_object instanceof IAsteroid))
 			return;
 		
 		ISprite sprite = (ISprite) p_drawable;
-		IRocket rocket = (IRocket) p_object;
-		sprite.setRotation(rocket.getDirection() - Math.toRadians(90));
+		IAsteroid asteroid = (IAsteroid) p_object;
+		
+		sprite.getDimension().set((int) (asteroid.getRadius() * sizeFactor * 2), (int) (asteroid.getRadius() * sizeFactor * 2));
 		
 	}
 	

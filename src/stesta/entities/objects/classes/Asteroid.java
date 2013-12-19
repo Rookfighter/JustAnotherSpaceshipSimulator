@@ -6,22 +6,39 @@ import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.FixtureDef;
 
 import stesta.entities.objects.AMovingSpaceObject;
-import stesta.entities.objects.IRocket;
 import stesta.entities.objects.EObjectTypes;
+import stesta.entities.objects.IAsteroid;
 
-public class Rocket extends AMovingSpaceObject implements IRocket{
+public class Asteroid extends AMovingSpaceObject implements IAsteroid{
 
-	public static final float DEF_RADIUS = 0.5f;
+	private static final float DEF_RADIUS = 1.0f;
 	private static final float DEF_FRICTION = 0.3f;
-	private static final float DEF_DENSITY = 0.6f;
+	private static final float DEF_DENSITY = 0.8f;
 	private static final float DEF_RESTITUTION = 0.5f;
 	
 	private float radius;
 	
-	public Rocket()
+	public Asteroid()
 	{
-		super(EObjectTypes.ROCKET);
+		super(EObjectTypes.ASTEROID);
 		radius = DEF_RADIUS;
+	}
+	
+	@Override
+	public void setRadius(final float p_radius)
+	{
+		if(isInitialized())
+			throw new IllegalStateException("Asteroid has already been initialized.");
+		if(p_radius <= 0)
+			throw new IllegalArgumentException("Asteroid radius cannot be zero or negative.");
+		
+		radius = p_radius;
+	}
+	
+	@Override
+	public float getRadius()
+	{
+		return radius;
 	}
 
 	@Override
@@ -38,7 +55,6 @@ public class Rocket extends AMovingSpaceObject implements IRocket{
 	@Override
 	protected FixtureDef getFixtureDef()
 	{
-		
 		FixtureDef result = new FixtureDef();
 		CircleShape cs = new CircleShape();
 		cs.setRadius(radius);
@@ -51,16 +67,6 @@ public class Rocket extends AMovingSpaceObject implements IRocket{
 		return result;
 	}
 
-	@Override
-	public float getDirection()
-	{
-		return getBody().getAngle();
-	}
 	
-	@Override
-	public float getRadius()
-	{
-		return radius;
-	}
 
 }

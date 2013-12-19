@@ -18,7 +18,7 @@ public class Sternenstaub {
 		app.waitForThread();
 	}
 	
-	
+	private static final int ASTEROID_COUNT = 100;
 	private GameFactory gameFactory;
 	
 	private Sternenstaub()
@@ -28,6 +28,7 @@ public class Sternenstaub {
 	
 	private void initializeGame()
 	{
+		gameFactory.getViewFactory().getControllerFactory().getEntityFactory().generateRandomAsteroids(ASTEROID_COUNT);
 		gameFactory.getViewFactory().getControllerFactory().getEntityFactory().createRocket().getBody().setTransform(new Vec2(10.0f,10.0f), 0);
 	}
 	

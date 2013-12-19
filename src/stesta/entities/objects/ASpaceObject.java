@@ -12,20 +12,41 @@ public abstract class ASpaceObject implements ISpaceObject {
 	private Body body;
 	private EObjectTypes type;
 	
-	public ASpaceObject(final EObjectTypes p_type, final World p_world)
+	public ASpaceObject(final EObjectTypes p_type)
 	{
+		body = null;
+		type = p_type;
+	}
+	
+	@Override
+	public void initialize(final World p_world)
+	{
+		if(isInitialized())
+			throw new IllegalStateException(String.format("%s-object has already been initialized.", getClass().getName()));
+		
 		body = p_world.createBody(getBodyDef());
 		body.createFixture(getFixtureDef());
-		type = p_type;
 	}
 	
 	protected abstract BodyDef getBodyDef();
 	protected abstract FixtureDef getFixtureDef();
 	
 	@Override
+	public boolean isInitialized()
+	{
+		return body != null;
+	}
+	
+	@Override
 	public Body getBody()
 	{
 		return body;
+	}
+	
+	@Override
+	public void setPosition(final Vec2 p_position)
+	{
+		body.setTransform(p_position, body.getAngle());
 	}
 	
 	@Override

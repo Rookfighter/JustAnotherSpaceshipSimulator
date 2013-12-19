@@ -1,5 +1,6 @@
 package stesta.entities.objects;
 
 public enum EObjectTypes {
-	ROCKET;
+	ROCKET,
+	ASTEROID;
 }

@@ -43,7 +43,11 @@ public class StarField implements IDrawable{
 	{
 		Vector2D diff = Vector2D.vectorBetween(position, p_position);
 		position.assign(p_position);
-		moveBy(diff);
+		
+		if(Math.abs(diff.DX) >= dimension.Width() || Math.abs(diff.DY) >= dimension.Height())
+			refillField();
+		else
+			moveBy(diff);
 	}
 	
 	public void moveBy(final Vector2D p_diff)
