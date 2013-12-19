@@ -29,6 +29,7 @@ public class SpaceDrawListGenerator implements IDrawListGenerator {
 	private DeltaTime delta;
 	private IRocketController player;
 	private Dimension2DF fovDimension;
+	private Dimension2DI visualFovDimension;
 	private List<IDrawable> drawList;
 	private Map<ISpaceObject, IDrawable> drawMap;
 	private DrawableMap drawableGenerator;
@@ -41,6 +42,7 @@ public class SpaceDrawListGenerator implements IDrawListGenerator {
 		player = p_player;
 		drawMap = new HashMap<ISpaceObject, IDrawable>();
 		fovDimension = new Dimension2DF();
+		visualFovDimension = new Dimension2DI();
 		comparator = new DrawOrderComparator();
 		drawableGenerator = new DrawableMap();
 		starField = new StarField();
@@ -49,20 +51,21 @@ public class SpaceDrawListGenerator implements IDrawListGenerator {
 		setDimension(new Dimension2DI(DEF_WIDTH, DEF_HEIGHT));
 	}
 	
-	private void setDimension(final Dimension2DI p_dimension)
-	{
-		double fovWidth = (double) (p_dimension.Width()) / sizeFactor;
-		double fovHeight = (double) (p_dimension.Height()) / sizeFactor;
-		fovDimension.set(fovWidth, fovHeight);
-		starField.assignDimension(p_dimension);
-	}
-	
 	private void calculateSizeFactor()
 	{
 		ISprite sprite = (ISprite) getDrawableFor(player.getControlledObject());
-		sizeFactor = ((sprite.getDimension().Width() / 2) / player.getControlledObject().getRadius());
+		sizeFactor = (float) (sprite.getDimension().Width()) / (player.getControlledObject().getRadius() * 2);
 	}
-
+	
+	private void setDimension(final Dimension2DI p_dimension)
+	{
+		double fovWidth = (double) (p_dimension.Width() + DEF_FOV_BUF)  / (double) (sizeFactor);
+		double fovHeight = (double) (p_dimension.Height() + DEF_FOV_BUF) / (double) (sizeFactor);
+		fovDimension.set(fovWidth, fovHeight);
+		visualFovDimension.assign(p_dimension);
+		starField.assignDimension(visualFovDimension);
+	}
+	
 	@Override
 	public List<IDrawable> generateDrawList()
 	{
@@ -109,12 +112,12 @@ public class SpaceDrawListGenerator implements IDrawListGenerator {
 			return;
 		
 		ISprite sprite = (ISprite) p_drawable;
-		float diffx = player.getControlledObject().getPosition().x - p_object.getPosition().x;
-		float diffy = player.getControlledObject().getPosition().y - p_object.getPosition().y;
-		float x = diffx + (float) (fovDimension.Width() / 2);
-		float y = diffy + (float) (fovDimension.Height() / 2);
+		float diffx =  p_object.getPosition().x - player.getControlledObject().getPosition().x;
+		float diffy =  p_object.getPosition().y - player.getControlledObject().getPosition().y;
+		int x = (int) (sizeFactor * diffx +  visualFovDimension.Width() / 2 - sprite.getDimension().Width() / 2);
+		int y = (int) (sizeFactor * diffy + visualFovDimension.Height() / 2 - sprite.getDimension().Height() / 2);
 		
-		sprite.getPosition().set((int) (sizeFactor * x), (int) (sizeFactor * y));
+		sprite.getPosition().set( x, y);
 	}
 	
 	private void setDrawableDirection(final ISpaceObject p_object, final IDrawable p_drawable)
@@ -123,7 +126,7 @@ public class SpaceDrawListGenerator implements IDrawListGenerator {
 			return;
 		
 		ISprite sprite = (ISprite) p_drawable;
-		sprite.setRotation(p_object.getBody().getAngle() - Math.toRadians(90));
+		sprite.setRotation(p_object.getBody().getAngle() + Math.toRadians(90));
 	}
 	
 	private void setDrawableDimension(final ISpaceObject p_object,final IDrawable p_drawable) 
@@ -148,8 +151,8 @@ public class SpaceDrawListGenerator implements IDrawListGenerator {
 	
 	private void addStarField()
 	{
-		int x = - (int) (player.getControlledObject().getPosition().x * sizeFactor);
-		int y = - (int) (player.getControlledObject().getPosition().y * sizeFactor);
+		int x = (int) (player.getControlledObject().getPosition().x * sizeFactor);
+		int y = (int) (player.getControlledObject().getPosition().y * sizeFactor);
 		starField.assignPosition(new Position2DI(x,y));
 		drawList.add(starField);
 	}

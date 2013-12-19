@@ -11,9 +11,9 @@ import stesta.entities.objects.IAsteroid;
 
 public class Asteroid extends AMovingSpaceObject implements IAsteroid{
 
-	private static final float DEF_RADIUS = 1.0f;
+	private static final float DEF_RADIUS = 0.5f;
 	private static final float DEF_FRICTION = 0.3f;
-	private static final float DEF_DENSITY = 1.1f;
+	private static final float DEF_DENSITY = 2.5f;
 	private static final float DEF_RESTITUTION = 0.3f;
 	
 	private float radius;

@@ -15,8 +15,9 @@ public class EntityFactory {
 
 	private static final float MIN_ASTEROID_RADIUS = 0.4f;
 	private static final float MAX_ASTEROID_RADIUS = 2.0f;
-	private static final float MAX_ASTEROID_VELOCITY = 7.0f;
-	private static final float MAX_ASTEROID_ANGLE_VELOCITY = (float) Math.toRadians(30);
+	private static final float MIN_ASTEROID_VELOCITY = 5.0f;
+	private static final float MAX_ASTEROID_VELOCITY = 10.0f;
+	private static final float MAX_ASTEROID_ANGLE_VELOCITY = (float) Math.toRadians(90);
 	
 	private ISpace space;
 	private Random random;
@@ -24,6 +25,7 @@ public class EntityFactory {
 	public EntityFactory()
 	{
 		space = new Space();
+		space.getDimension().set(1000,1000);
 		random = new Random();
 	}
 	
@@ -67,7 +69,7 @@ public class EntityFactory {
 	
 	private Vec2 createRandomAsteroidVelocity()
 	{
-		float velocity = random.nextFloat() * MAX_ASTEROID_VELOCITY;
+		float velocity = MIN_ASTEROID_VELOCITY + random.nextFloat() * (MAX_ASTEROID_VELOCITY - MIN_ASTEROID_VELOCITY);
 		float direction = random.nextFloat() * 2 * (float) Math.PI;
 		
 		float dx = (float) Math.cos(direction) * velocity;
@@ -83,7 +85,7 @@ public class EntityFactory {
 			IAsteroid asteroid = createRandomAsteroid();
 			float x = random.nextFloat() * space.getDimension().Width();
 			float y = random.nextFloat() * space.getDimension().Height();
-			asteroid.getBody().setTransform(new Vec2(x,y), asteroid.getBody().getAngle());
+			asteroid.setPosition(new Vec2(x,y));
 		}
 	}
 }
