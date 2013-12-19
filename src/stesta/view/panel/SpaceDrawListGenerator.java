@@ -51,8 +51,8 @@ public class SpaceDrawListGenerator implements IDrawListGenerator {
 	
 	private void setDimension(final Dimension2DI p_dimension)
 	{
-		double fovWidth = (double) (p_dimension.Width() + DEF_FOV_BUF) / sizeFactor;
-		double fovHeight = (double) (p_dimension.Height() + DEF_FOV_BUF) / sizeFactor;
+		double fovWidth = (double) (p_dimension.Width()) / sizeFactor;
+		double fovHeight = (double) (p_dimension.Height()) / sizeFactor;
 		fovDimension.set(fovWidth, fovHeight);
 		starField.assignDimension(p_dimension);
 	}

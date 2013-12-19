@@ -18,7 +18,7 @@ public class Sternenstaub {
 		app.waitForThread();
 	}
 	
-	private static final int ASTEROID_COUNT = 100;
+	private static final int ASTEROID_COUNT = 300;
 	private GameFactory gameFactory;
 	
 	private Sternenstaub()

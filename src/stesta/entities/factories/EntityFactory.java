@@ -24,7 +24,6 @@ public class EntityFactory {
 	public EntityFactory()
 	{
 		space = new Space();
-		space.getDimension().set(200,200);
 		random = new Random();
 	}
 	
