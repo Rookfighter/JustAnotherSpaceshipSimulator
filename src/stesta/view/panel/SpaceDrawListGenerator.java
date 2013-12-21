@@ -57,7 +57,7 @@ public class SpaceDrawListGenerator implements IDrawListGenerator {
 		sizeFactor = (float) (sprite.getDimension().Width()) / (player.getControlledObject().getRadius() * 2);
 	}
 	
-	private void setDimension(final Dimension2DI p_dimension)
+	public void setDimension(final Dimension2DI p_dimension)
 	{
 		double fovWidth = (double) (p_dimension.Width() + DEF_FOV_BUF)  / (double) (sizeFactor);
 		double fovHeight = (double) (p_dimension.Height() + DEF_FOV_BUF) / (double) (sizeFactor);
