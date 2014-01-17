@@ -8,6 +8,8 @@ import lib.utils.integer.Dimension2DI;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.World;
 
+import stesta.entities.objects.IAsteroid;
+import stesta.entities.objects.IRocket;
 import stesta.entities.objects.ISpaceObject;
 import stesta.entities.world.ISpace;
 
@@ -19,7 +21,12 @@ public class Space implements ISpace {
 	
 	private Dimension2DI dimension;
 	private World physicsWorld;
-	private List<ISpaceObject> spaceObjectList;
+	
+	private List<IAsteroid> asteroidList;
+	private List<IRocket> rocketList;
+	private List<ISpaceObject> miscObjectList;
+	private List<ISpaceObject> objectList;
+	
 	private float timeStep;
 
 	public Space()
@@ -31,7 +38,10 @@ public class Space implements ISpace {
 	{
 		dimension = p_dimension;
 		timeStep = DEF_TIME_STEP;
-		spaceObjectList = new LinkedList<ISpaceObject>();
+		asteroidList = new LinkedList<IAsteroid>();
+		rocketList = new LinkedList<IRocket>();
+		miscObjectList = new LinkedList<ISpaceObject>();
+		objectList = new LinkedList<ISpaceObject>();
 		initPhysicsWorld();
 	}
 	
@@ -44,28 +54,57 @@ public class Space implements ISpace {
 	@Override
 	public List<ISpaceObject> getObjects()
 	{
-		return spaceObjectList;
+		objectList.clear();
+		objectList.addAll(asteroidList);
+		objectList.addAll(rocketList);
+		objectList.addAll(miscObjectList);
+		return objectList;
+	}
+	
+	@Override
+	public List<IAsteroid> getAsteroids()
+	{
+		return asteroidList;
+	}
+	
+	@Override
+	public List<IRocket> getRockets()
+	{
+		return rocketList;
 	}
 
 	@Override
 	public void addObject(ISpaceObject p_object)
 	{
-		spaceObjectList.add(p_object);
+		if(p_object instanceof IAsteroid)
+			asteroidList.add((IAsteroid) p_object);
+		else if(p_object instanceof IRocket)
+			rocketList.add((IRocket) p_object);
+		else
+			miscObjectList.add(p_object);
 	}
 
 	@Override
 	public void removeObject(ISpaceObject p_object)
 	{
 		physicsWorld.destroyBody(p_object.getBody());
-		spaceObjectList.remove(p_object);
+		if(p_object instanceof IAsteroid)
+			asteroidList.remove((IAsteroid) p_object);
+		else if(p_object instanceof IRocket)
+			rocketList.remove((IRocket) p_object);
+		else
+			miscObjectList.remove(p_object);
 	}
 	
 	@Override
 	public void clear()
 	{
-		for(ISpaceObject object : spaceObjectList)
+		for(ISpaceObject object : getObjects())
 			physicsWorld.destroyBody(object.getBody());
-		spaceObjectList.clear();
+		
+		asteroidList.clear();
+		rocketList.clear();
+		miscObjectList.clear();
 	}
 
 	@Override

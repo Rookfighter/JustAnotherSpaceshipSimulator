@@ -1,9 +1,7 @@
 package stesta.controller.classes;
 
-import org.jbox2d.common.Vec2;
-
 import stesta.controller.ISpaceController;
-import stesta.entities.objects.ISpaceObject;
+import stesta.entities.objects.IAsteroid;
 import stesta.entities.world.ISpace;
 
 public class SpaceController implements ISpaceController {
@@ -32,21 +30,21 @@ public class SpaceController implements ISpaceController {
 	
 	private void correctPositions()
 	{
-		for(ISpaceObject object : space.getObjects())
-			correctPositionOf(object);
+		for(IAsteroid asteroid : space.getAsteroids())
+			correctPositionOf(asteroid);
 	}
 	
-	private void correctPositionOf(final ISpaceObject p_object)
+	private void correctPositionOf(final IAsteroid p_asteroid)
 	{
-		if(p_object.getPosition().x < 0)
-			p_object.setPosition(new Vec2(space.getDimension().Width(), p_object.getPosition().y));
-		else if (p_object.getPosition().x > space.getDimension().Width())
-			p_object.setPosition(new Vec2(0 , p_object.getPosition().y));
+		if(p_asteroid.getPosition().x < 0 && p_asteroid.getVelocity().x < 0)
+			p_asteroid.getVelocity().x = -p_asteroid.getVelocity().x;
+		else if (p_asteroid.getPosition().x > space.getDimension().Width() && p_asteroid.getVelocity().x > 0)
+			p_asteroid.getVelocity().x = -p_asteroid.getVelocity().x;
 		
-		if(p_object.getPosition().y < 0)
-			p_object.setPosition(new Vec2( p_object.getPosition().x, space.getDimension().Height()));
-		else if (p_object.getPosition().y > space.getDimension().Height())
-			p_object.setPosition(new Vec2( p_object.getPosition().y, 0));
+		if(p_asteroid.getPosition().y < 0 && p_asteroid.getVelocity().y < 0)
+			p_asteroid.getVelocity().y = -p_asteroid.getVelocity().y;
+		else if (p_asteroid.getPosition().y > space.getDimension().Height() && p_asteroid.getVelocity().y > 0)
+			p_asteroid.getVelocity().y = -p_asteroid.getVelocity().y;
 	}
 
 	@Override
