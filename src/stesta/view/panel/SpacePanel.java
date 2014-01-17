@@ -14,7 +14,7 @@ public class SpacePanel extends GamePanel {
 	public SpacePanel(final IRocketController p_player)
 	{
 		super();
-		setDrawListGenerator(new SpaceDrawListGenerator(p_player));
+		setDrawListGenerator(new SpaceDrawListGenerator2(p_player));
 		this.addComponentListener(new SpacePanelListener());
 	}
 
@@ -37,7 +37,7 @@ public class SpacePanel extends GamePanel {
 		@Override
 		public void componentResized(ComponentEvent e)
 		{
-			((SpaceDrawListGenerator) getDrawListGenerator()).setDimension(new Dimension2DI(getWidth(), getHeight()));
+			((SpaceDrawListGenerator2) getDrawListGenerator()).setDimension(new Dimension2DI(getWidth(), getHeight()));
 			
 		}
 

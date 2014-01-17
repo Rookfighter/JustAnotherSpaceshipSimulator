@@ -8,11 +8,11 @@ import org.jbox2d.common.Vec2;
 import stesta.app.factories.GameFactory;
 import lib.app.GameThread;
 
-public class Sternenstaub {
+public class JASS {
 
 	public static void main(String[] args)
 	{
-		Sternenstaub app = new Sternenstaub();
+		JASS app = new JASS();
 		app.initializeGame();
 		app.startGame();
 		app.waitForThread();
@@ -21,7 +21,7 @@ public class Sternenstaub {
 	private static final int ASTEROID_COUNT = 100;
 	private GameFactory gameFactory;
 	
-	private Sternenstaub()
+	private JASS()
 	{
 		gameFactory = new GameFactory();
 	}

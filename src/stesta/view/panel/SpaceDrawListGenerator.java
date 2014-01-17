@@ -16,6 +16,7 @@ import lib.graphics.panel.DrawOrderComparator;
 import lib.graphics.panel.IDrawListGenerator;
 import lib.graphics.sprites.ISprite;
 import lib.utils.DeltaTime;
+import lib.utils.TimeAccount;
 import lib.utils.doubl.Dimension2DF;
 import lib.utils.integer.Dimension2DI;
 import lib.utils.integer.Position2DI;
@@ -161,6 +162,13 @@ public class SpaceDrawListGenerator implements IDrawListGenerator {
 	public void setDeltaTime(DeltaTime p_delta)
 	{
 		delta = p_delta;
+	}
+
+	@Override
+	public void setTimeAccount(TimeAccount p_account)
+	{
+		// TODO Auto-generated method stub
+		
 	}
 	
 }
