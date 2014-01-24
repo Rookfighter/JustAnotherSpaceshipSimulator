@@ -2,11 +2,14 @@ package stesta.view.factories;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+
+import javax.swing.JPanel;
 
 import lib.graphics.components.StatusPanel;
 import lib.graphics.frame.GameFrame;
-import lib.graphics.panel.GamePanel;
-import lib.utils.integer.Dimension2DI;
+import lib.graphics.panel.GamePanelManager;
 import stesta.controller.factories.ControllerFactory;
 import stesta.controller.rocket.IRocketController;
 import stesta.view.controls.RocketKeyControl;
@@ -15,9 +18,15 @@ import stesta.view.panel.SpacePanel;
 import stesta.view.sprites.SpaceSheetLoader;
 
 public class ViewFactory {
+	
+	private static final boolean SPLIT_SCREEN = false;
 
 	private ControllerFactory controllerFactory;
+	
+	private JPanel gridPanel;
 	private SpacePanel spacePanel;
+	private SpacePanel spacePanel2;
+	private GamePanelManager gamePanelManager;
 	private StatusPanel statusPanel;
 	private SpaceFrame spaceFrame;
 	private RocketKeyControl keyControl;
@@ -26,28 +35,58 @@ public class ViewFactory {
 	{
 		createComponents();
 		initSpacePanel();
+		initGridPanel();
+		initSpacePanelManager();
 		initSpaceFrame();
 	}
 
 	private void createComponents()
 	{
 		controllerFactory = new ControllerFactory();
+		gridPanel = new JPanel();
+		
 		IRocketController controller = controllerFactory.createRocketController();
 		spacePanel = new SpacePanel(controller);
-		spaceFrame = new SpaceFrame(); 
 		keyControl = new RocketKeyControl(controller);
+		
+		controller = controllerFactory.createRocketController();
+		spacePanel2 = new SpacePanel(controller);
+		
+		gamePanelManager = new GamePanelManager();
+		spaceFrame = new SpaceFrame(); 
+		
 		statusPanel = new StatusPanel();
+		
 	}
 	
 	private void initSpacePanel()
 	{
 		spacePanel.setBackground(Color.BLACK);
-		spacePanel.setPreferredSize(new Dimension2DI(800,600));
+		spacePanel2.setBackground(Color.BLACK);
+	}
+	
+	private void initGridPanel()
+	{
+		if(SPLIT_SCREEN)
+			gridPanel.setLayout(new GridLayout(1,2));
+		else
+			gridPanel.setLayout(new GridLayout(1,1));
+		gridPanel.setPreferredSize(new Dimension(800,600));
+		gridPanel.add(spacePanel);
+		if(SPLIT_SCREEN)
+			gridPanel.add(spacePanel2);
+	}
+	
+	private void initSpacePanelManager()
+	{
+		gamePanelManager.add(spacePanel);
+		if(SPLIT_SCREEN)
+			gamePanelManager.add(spacePanel2);
 	}
 
 	private void initSpaceFrame()
 	{
-		spaceFrame.add(spacePanel, BorderLayout.CENTER);
+		spaceFrame.add(gridPanel, BorderLayout.CENTER);
 		spaceFrame.add(statusPanel, BorderLayout.EAST);
 		spaceFrame.setKeyControl(keyControl);
 		spaceFrame.setSpriteSheetLoader(new SpaceSheetLoader());
@@ -59,9 +98,24 @@ public class ViewFactory {
 		return spaceFrame;
 	}
 	
-	public GamePanel getGamePanel()
+	public JPanel getGridPanel()
+	{
+		return gridPanel;
+	}
+	
+	public SpacePanel getSpacePanel()
 	{
 		return spacePanel;
+	}
+	
+	public SpacePanel getSpacePanel2()
+	{
+		return spacePanel2;
+	}
+	
+	public GamePanelManager getGamePanelManager()
+	{
+		return gamePanelManager;
 	}
 	
 	public StatusPanel getStatusPanel()
@@ -73,6 +127,7 @@ public class ViewFactory {
 	{
 		return controllerFactory;
 	}
+
 
 	
 }

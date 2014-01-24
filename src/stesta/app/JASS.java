@@ -29,7 +29,7 @@ public class JASS {
 	private void initializeGame()
 	{
 		gameFactory.getViewFactory().getControllerFactory().getEntityFactory().generateRandomAsteroids(ASTEROID_COUNT);
-		gameFactory.getViewFactory().getControllerFactory().getEntityFactory().createRocket().getBody().setTransform(new Vec2(10.0f,10.0f), 0);
+		gameFactory.getViewFactory().getSpacePanel2().getObservedController().getControlledObject().setPosition(new Vec2(50,50));
 	}
 	
 	private void startGame()

@@ -10,12 +10,19 @@ import lib.utils.integer.Dimension2DI;
 public class SpacePanel extends GamePanel {
 
 	private static final long serialVersionUID = -8839867439410500078L;
+	private IRocketController observedController;
 
 	public SpacePanel(final IRocketController p_player)
 	{
 		super();
-		setDrawListGenerator(new SpaceDrawListGenerator2(p_player));
+		observedController = p_player;
+		setDrawListGenerator(new SpaceDrawListGenerator2(observedController));
 		this.addComponentListener(new SpacePanelListener());
+	}
+	
+	public IRocketController getObservedController()
+	{
+		return observedController;
 	}
 
 	private class SpacePanelListener implements ComponentListener {
