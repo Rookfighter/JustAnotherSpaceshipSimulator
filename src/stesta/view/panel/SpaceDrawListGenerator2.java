@@ -14,6 +14,7 @@ import stesta.entities.objects.IRocket;
 import stesta.entities.objects.ISpaceObject;
 import stesta.view.ISpaceHUD;
 import stesta.view.drawable.StarField;
+import stesta.view.multimedia.MultimediaRocket;
 import lib.graphics.IDrawable;
 import lib.graphics.panel.DrawOrderComparator;
 import lib.graphics.panel.IDrawListGenerator;
@@ -77,6 +78,35 @@ public class SpaceDrawListGenerator2 implements IDrawListGenerator{
 	}
 	
 	private void setStatus(final ISpaceObject p_object, final ISprite p_sprite)
+	{
+		if(p_object instanceof IRocket)
+			setRocketStatus((IRocket) p_object, (MultimediaRocket) p_sprite);
+		else
+			setUnknownStatus(p_object, p_sprite);
+	}
+	
+	private void setRocketStatus(final IRocket p_rocket, final MultimediaRocket p_multimedia)
+	{
+		setSpritePosition(p_rocket, p_multimedia);
+		estimateMovement(p_rocket, p_multimedia);
+		setSpriteRotation(p_rocket, p_multimedia);
+		setSpriteDimension(p_rocket, p_multimedia);
+		setRocketAnimation(p_rocket, p_multimedia);
+		p_multimedia.setDefaultDrawOrder();
+	}
+	
+	private void setRocketAnimation(final IRocket p_rocket, final MultimediaRocket p_multimedia)
+	{
+		if(p_rocket.getAccelerateForce() > 0)
+		{
+			if(!p_multimedia.getToDraw().equals(p_multimedia.getAnimation(MultimediaRocket.ANIMATION_ROCKET_MOVEMENT)))
+				p_multimedia.setAnimationToDraw(MultimediaRocket.ANIMATION_ROCKET_MOVEMENT);
+		}
+		else
+			p_multimedia.setSpriteToDraw(MultimediaRocket.SPRITE_ROCKET_OFF);
+	}
+	
+	private void setUnknownStatus(final ISpaceObject p_object, final ISprite p_sprite)
 	{
 		setSpritePosition(p_object, p_sprite);
 		if(p_object instanceof IMovingSpaceObject)
@@ -160,6 +190,7 @@ public class SpaceDrawListGenerator2 implements IDrawListGenerator{
 	public void setDeltaTime(final DeltaTime p_delta)
 	{
 		delta = p_delta;
+		spriteMap.setDeltaTime(delta);
 	}
 
 	@Override

@@ -15,13 +15,16 @@ public class Rocket extends AMovingSpaceObject implements IRocket{
 	private static final float DEF_FRICTION = 0.3f;
 	private static final float DEF_DENSITY = 0.6f;
 	private static final float DEF_RESTITUTION = 0.5f;
+	private static final float MAX_ACCELERATE_FORCE = 10.0f;
 	
 	private float radius;
+	private float accelerateForce;
 	
 	public Rocket()
 	{
 		super(EObjectTypes.ROCKET);
 		radius = DEF_RADIUS;
+		accelerateForce = 0;
 	}
 
 	@Override
@@ -61,6 +64,24 @@ public class Rocket extends AMovingSpaceObject implements IRocket{
 	public float getRadius()
 	{
 		return radius;
+	}
+
+	@Override
+	public float getMaxAccelerateForce()
+	{
+		return MAX_ACCELERATE_FORCE;
+	}
+
+	@Override
+	public float getAccelerateForce()
+	{
+		return accelerateForce;
+	}
+
+	@Override
+	public void setAccelerateForce(final float p_accelerateForce)
+	{
+		accelerateForce = p_accelerateForce;
 	}
 
 }

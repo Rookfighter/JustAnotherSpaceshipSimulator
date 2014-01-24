@@ -86,6 +86,7 @@ public class ViewFactory {
 
 	private void initSpaceFrame()
 	{
+		spaceFrame.setTitle("Just Another Spaceship Simulator");
 		spaceFrame.add(gridPanel, BorderLayout.CENTER);
 		spaceFrame.add(statusPanel, BorderLayout.EAST);
 		spaceFrame.setKeyControl(keyControl);

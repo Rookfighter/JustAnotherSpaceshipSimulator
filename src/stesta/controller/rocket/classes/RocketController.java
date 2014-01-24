@@ -11,15 +11,12 @@ public class RocketController extends AObjectController<IRocket> implements IRoc
 
 	private static final float DEF_LEFT_ANG_VEL = (float) Math.toRadians(7);
 	private static final float DEF_RIGHT_ANG_VEL = (float) Math.toRadians(7);
-	private static final float DEF_ACC_FORCE = 10.0f;
 	
 	private float angularVelocity;
-	private float accelerateForce;
 	
 	public RocketController()
 	{
 		angularVelocity = 0;
-		accelerateForce = 0;
 	}
 		
 	@Override
@@ -28,14 +25,11 @@ public class RocketController extends AObjectController<IRocket> implements IRoc
 		accelerateRocket();
 		turnRocket();
 	}
-	
-	
-	
 
 	private void accelerateRocket()
 	{
-		float dx = (float) Math.cos(getControlledObject().getDirection()) * accelerateForce;
-		float dy = (float) Math.sin(getControlledObject().getDirection()) * accelerateForce;
+		float dx = (float) Math.cos(getControlledObject().getDirection()) * getControlledObject().getAccelerateForce();
+		float dy = (float) Math.sin(getControlledObject().getDirection()) * getControlledObject().getAccelerateForce();
 		Vec2 force = new Vec2(dx,dy);
 		getControlledObject().getBody().applyForceToCenter(force);
 	}
@@ -61,7 +55,7 @@ public class RocketController extends AObjectController<IRocket> implements IRoc
 	@Override
 	public void accelerate()
 	{
-		accelerateForce = DEF_ACC_FORCE;
+		getControlledObject().setAccelerateForce(getControlledObject().getMaxAccelerateForce());
 	}
 	
 	@Override
@@ -79,6 +73,6 @@ public class RocketController extends AObjectController<IRocket> implements IRoc
 	@Override
 	public void stopAccelerate()
 	{
-		accelerateForce = 0;
+		getControlledObject().setAccelerateForce(0);
 	}
 }
