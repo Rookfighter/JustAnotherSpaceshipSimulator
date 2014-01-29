@@ -16,7 +16,7 @@ public class SpacePanel extends GamePanel {
 	{
 		super();
 		observedController = p_player;
-		setDrawListGenerator(new SpaceDrawListGenerator2(observedController));
+		setDrawListGenerator(new SpaceDrawListGenerator(observedController));
 		this.addComponentListener(new SpacePanelListener());
 	}
 	
@@ -44,8 +44,8 @@ public class SpacePanel extends GamePanel {
 		@Override
 		public void componentResized(ComponentEvent e)
 		{
-			((SpaceDrawListGenerator2) getDrawListGenerator()).setDimension(new Dimension2DI(getWidth(), getHeight()));
-			
+			if(getWidth() > 0 && getHeight() > 0)
+				((SpaceDrawListGenerator) getDrawListGenerator()).setDimension(new Dimension2DI(getWidth(), getHeight()));
 		}
 
 		@Override

@@ -1,16 +1,18 @@
 package stesta.view.panel;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import stesta.controller.rocket.IRocketController;
 import stesta.entities.objects.IAsteroid;
+import stesta.entities.objects.IMovingSpaceObject;
 import stesta.entities.objects.IRocket;
 import stesta.entities.objects.ISpaceObject;
 import stesta.view.drawable.StarField;
+import stesta.view.hud.ISpaceHUD;
+import stesta.view.hud.classes.SpaceHUD;
+import stesta.view.multimedia.MultimediaRocket;
 import lib.graphics.IDrawable;
 import lib.graphics.panel.DrawOrderComparator;
 import lib.graphics.panel.IDrawListGenerator;
@@ -21,154 +23,179 @@ import lib.utils.doubl.Dimension2DF;
 import lib.utils.integer.Dimension2DI;
 import lib.utils.integer.Position2DI;
 
-public class SpaceDrawListGenerator implements IDrawListGenerator {
-
-	private static final int DEF_WIDTH = 800;
-	private static final int DEF_HEIGHT = 600;
-	private static final int DEF_FOV_BUF = 200;
+public class SpaceDrawListGenerator implements IDrawListGenerator{
+	
+	private static final double DEF_SIZE_FACTOR = 32.0f;
+	private static final int DEF_BUFF_PIXELS = 100;
+	
+	private IRocketController player;
+	
+	private ISpaceHUD hud;
+	private StarField starField;
+	private Dimension2DF bufferedFoV;
+	
+	private SpriteMap spriteMap;
+	
+	private double sizeFactor;
+	
+	private DrawOrderComparator comparator;
 	
 	private DeltaTime delta;
-	private IRocketController player;
-	private Dimension2DF fovDimension;
-	private Dimension2DI visualFovDimension;
-	private List<IDrawable> drawList;
-	private Map<ISpaceObject, IDrawable> drawMap;
-	private DrawableMap drawableGenerator;
-	private DrawOrderComparator comparator;
-	private float sizeFactor;
-	private StarField starField;
+	private TimeAccount timeAccount;
 	
 	public SpaceDrawListGenerator(final IRocketController p_player)
 	{
 		player = p_player;
-		drawMap = new HashMap<ISpaceObject, IDrawable>();
-		fovDimension = new Dimension2DF();
-		visualFovDimension = new Dimension2DI();
-		comparator = new DrawOrderComparator();
-		drawableGenerator = new DrawableMap();
+		hud = new SpaceHUD(p_player);
 		starField = new StarField();
-		
-		calculateSizeFactor();
-		setDimension(new Dimension2DI(DEF_WIDTH, DEF_HEIGHT));
-	}
-	
-	private void calculateSizeFactor()
-	{
-		ISprite sprite = (ISprite) getDrawableFor(player.getControlledObject());
-		sizeFactor = (float) (sprite.getDimension().Width()) / (player.getControlledObject().getRadius() * 2);
-	}
-	
-	public void setDimension(final Dimension2DI p_dimension)
-	{
-		double fovWidth = (double) (p_dimension.Width() + DEF_FOV_BUF)  / (double) (sizeFactor);
-		double fovHeight = (double) (p_dimension.Height() + DEF_FOV_BUF) / (double) (sizeFactor);
-		fovDimension.set(fovWidth, fovHeight);
-		visualFovDimension.assign(p_dimension);
-		starField.assignDimension(visualFovDimension);
+		bufferedFoV = new Dimension2DF();
+		spriteMap = new SpriteMap();
+		sizeFactor = DEF_SIZE_FACTOR;
+		comparator = new DrawOrderComparator();
 	}
 	
 	@Override
 	public List<IDrawable> generateDrawList()
 	{
-		drawList = new LinkedList<IDrawable>();
-		fillDrawList();
-		addPermanentDrawables();
-		Collections.sort(drawList, comparator);
-		return drawList;
+		List<IDrawable> result = new LinkedList<IDrawable>();
+		addObjectSprites(result);
+		addStaticObjects(result);
+		Collections.sort(result, comparator);
+		return result;
 	}
 	
-	private void fillDrawList()
+	private void addObjectSprites(final List<IDrawable> p_list)
 	{
-		for(ISpaceObject  object : player.getObjectsInRect(fovDimension))
-			addDrawableOf(object);
-	}
-	
-	private void addDrawableOf(final ISpaceObject object)
-	{
-		IDrawable drawable = getDrawableFor(object);
-		setDrawablePosition(object, drawable);
-		setDrawableDirection(object, drawable);
-		setDrawableDimension(object, drawable);
-		drawable.setDefaultDrawOrder();
-		
-		drawList.add(drawable);
-	}
-	
-	private IDrawable getDrawableFor(final ISpaceObject p_object)
-	{
-		IDrawable drawable = drawMap.get(p_object);
-		
-		if(drawable == null)
+		ISprite sprite;
+		for(ISpaceObject  object : player.getObjectsInRect(bufferedFoV))
 		{
-			drawable = drawableGenerator.createDrawableFor(p_object);
-			drawMap.put(p_object, drawable);
+			sprite = spriteMap.get(object);
+			setStatus(object, sprite);
+			p_list.add(sprite);
 		}
-		
-		return drawable;
 	}
-
-	private void setDrawablePosition(final ISpaceObject p_object, final IDrawable p_drawable)
+	
+	private void setStatus(final ISpaceObject p_object, final ISprite p_sprite)
 	{
-		if(!(p_drawable instanceof ISprite))
-			return;
-		
-		ISprite sprite = (ISprite) p_drawable;
+		if(p_object instanceof IRocket)
+			setRocketStatus((IRocket) p_object, (MultimediaRocket) p_sprite);
+		else
+			setUnknownStatus(p_object, p_sprite);
+	}
+	
+	private void setRocketStatus(final IRocket p_rocket, final MultimediaRocket p_multimedia)
+	{
+		setSpritePosition(p_rocket, p_multimedia);
+		estimateMovement(p_rocket, p_multimedia);
+		setSpriteRotation(p_rocket, p_multimedia);
+		setSpriteDimension(p_rocket, p_multimedia);
+		setRocketAnimation(p_rocket, p_multimedia);
+		p_multimedia.setDefaultDrawOrder();
+	}
+	
+	private void setRocketAnimation(final IRocket p_rocket, final MultimediaRocket p_multimedia)
+	{
+		if(p_rocket.getAccelerateForce() > 0)
+		{
+			if(!p_multimedia.getToDraw().equals(p_multimedia.getAnimation(MultimediaRocket.ANIMATION_ROCKET_MOVEMENT)))
+				p_multimedia.setAnimationToDraw(MultimediaRocket.ANIMATION_ROCKET_MOVEMENT);
+		}
+		else
+			p_multimedia.setSpriteToDraw(MultimediaRocket.SPRITE_ROCKET_OFF);
+	}
+	
+	private void setUnknownStatus(final ISpaceObject p_object, final ISprite p_sprite)
+	{
+		setSpritePosition(p_object, p_sprite);
+		if(p_object instanceof IMovingSpaceObject)
+			estimateMovement((IMovingSpaceObject) p_object, p_sprite);
+			
+		setSpriteRotation(p_object, p_sprite);
+		setSpriteDimension(p_object, p_sprite);
+		p_sprite.setDefaultDrawOrder();
+	}
+	
+	private void setSpritePosition(final ISpaceObject p_object, final ISprite p_sprite)
+	{
 		float diffx =  p_object.getPosition().x - player.getControlledObject().getPosition().x;
 		float diffy =  p_object.getPosition().y - player.getControlledObject().getPosition().y;
-		int x = (int) (sizeFactor * diffx +  visualFovDimension.Width() / 2 - sprite.getDimension().Width() / 2);
-		int y = (int) (sizeFactor * diffy + visualFovDimension.Height() / 2 - sprite.getDimension().Height() / 2);
+		int x = (int) (sizeFactor * diffx +  hud.getDimension().Width() / 2 - p_sprite.getDimension().Width() / 2);
+		int y = (int) (sizeFactor * diffy + hud.getDimension().Height() / 2 - p_sprite.getDimension().Height() / 2);
 		
-		sprite.getPosition().set( x, y);
+		p_sprite.getPosition().set(x, y);
 	}
 	
-	private void setDrawableDirection(final ISpaceObject p_object, final IDrawable p_drawable)
+	private void estimateMovement(final IMovingSpaceObject p_object, final ISprite p_sprite)
 	{
-		if(!(p_drawable instanceof ISprite))
-			return;
+		//TODO code does not work properly
+		//Vec2 velocity = p_object.getVelocity();
+		//float factor = (float) (timeAccount.valueMilli()) / (float) (timeAccount.getStepMilli());
+		//int x = p_sprite.getPosition().X() + (int) ((velocity.x * factor * sizeFactor) / timeAccount.getStepMilli());
+		//int y = p_sprite.getPosition().Y() + (int) ((velocity.y * factor * sizeFactor)  / timeAccount.getStepMilli());
 		
-		ISprite sprite = (ISprite) p_drawable;
-		sprite.setRotation(p_object.getBody().getAngle() + Math.toRadians(90));
+		//p_sprite.getPosition().set(x, y);
 	}
 	
-	private void setDrawableDimension(final ISpaceObject p_object,final IDrawable p_drawable) 
+	private void setSpriteRotation(final ISpaceObject p_object, final ISprite p_sprite)
 	{
-		if(!(p_drawable instanceof ISprite))
-			return;
-		
-		if(!(p_object instanceof IAsteroid))
-			return;
-		
-		ISprite sprite = (ISprite) p_drawable;
-		IAsteroid asteroid = (IAsteroid) p_object;
-		
-		sprite.getDimension().set((int) (asteroid.getRadius() * sizeFactor * 2), (int) (asteroid.getRadius() * sizeFactor * 2));
-		
+		p_sprite.setRotation(p_object.getBody().getAngle() + Math.toRadians(90));
 	}
 	
-	private void addPermanentDrawables()
+	private void setSpriteDimension(final ISpaceObject p_object, final ISprite p_sprite)
 	{
-		addStarField();
+		if(p_object instanceof IAsteroid)
+			setAsteroidDimension((IAsteroid) p_object, p_sprite);
+		else if(p_object instanceof IRocket)
+			setRocketDimension((IRocket) p_object, p_sprite);
 	}
 	
-	private void addStarField()
+	private void setAsteroidDimension(final IAsteroid p_asteroid, final ISprite p_sprite)
+	{
+		p_sprite.getDimension().set((int) (p_asteroid.getRadius() * sizeFactor * 2), (int) (p_asteroid.getRadius() * sizeFactor * 2));
+	}
+	
+	private void setRocketDimension(final IRocket p_rocket, final ISprite p_sprite)
+	{
+		p_sprite.getDimension().set((int) (p_rocket.getRadius() * sizeFactor * 2), (int) (p_rocket.getRadius() * sizeFactor * 2));
+	}
+	
+	private void addStaticObjects(final List<IDrawable> p_list)
+	{
+		calcStarfieldPosition();
+		hud.update();
+		
+		p_list.add(starField);
+		p_list.add(hud);
+	}
+	
+	private void calcStarfieldPosition()
 	{
 		int x = (int) (player.getControlledObject().getPosition().x * sizeFactor);
 		int y = (int) (player.getControlledObject().getPosition().y * sizeFactor);
 		starField.assignPosition(new Position2DI(x,y));
-		drawList.add(starField);
 	}
 	
-	@Override
-	public void setDeltaTime(DeltaTime p_delta)
+	public void setDimension(final Dimension2DI p_dimension)
 	{
-		delta = p_delta;
+		hud.setDimension(new Dimension2DI(p_dimension.Width(), p_dimension.Height()));
+		starField.assignDimension(hud.getDimension());
+		
+		double bufferedWidth = (double) (p_dimension.Width() + DEF_BUFF_PIXELS)  / (double) (sizeFactor);
+		double bufferedHeight = (double) (p_dimension.Height() + DEF_BUFF_PIXELS) / (double) (sizeFactor);
+		bufferedFoV.set(bufferedWidth, bufferedHeight);
 	}
 
 	@Override
-	public void setTimeAccount(TimeAccount p_account)
+	public void setDeltaTime(final DeltaTime p_delta)
 	{
-		// TODO Auto-generated method stub
-		
+		delta = p_delta;
+		spriteMap.setDeltaTime(delta);
 	}
-	
+
+	@Override
+	public void setTimeAccount(final TimeAccount p_account)
+	{
+		timeAccount = p_account;
+	}
+
 }
