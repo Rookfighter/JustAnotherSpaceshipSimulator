@@ -3,17 +3,15 @@ package stesta.view.panel;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-
-import org.jbox2d.common.Vec2;
 
 import stesta.controller.rocket.IRocketController;
 import stesta.entities.objects.IAsteroid;
 import stesta.entities.objects.IMovingSpaceObject;
 import stesta.entities.objects.IRocket;
 import stesta.entities.objects.ISpaceObject;
-import stesta.view.ISpaceHUD;
 import stesta.view.drawable.StarField;
+import stesta.view.hud.ISpaceHUD;
+import stesta.view.hud.classes.SpaceHUD;
 import stesta.view.multimedia.MultimediaRocket;
 import lib.graphics.IDrawable;
 import lib.graphics.panel.DrawOrderComparator;
@@ -48,7 +46,7 @@ public class SpaceDrawListGenerator2 implements IDrawListGenerator{
 	public SpaceDrawListGenerator2(final IRocketController p_player)
 	{
 		player = p_player;
-		hud = new SpaceHUD();
+		hud = new SpaceHUD(p_player);
 		starField = new StarField();
 		bufferedFoV = new Dimension2DF();
 		spriteMap = new SpriteMap();
@@ -164,6 +162,7 @@ public class SpaceDrawListGenerator2 implements IDrawListGenerator{
 	private void addStaticObjects(final List<IDrawable> p_list)
 	{
 		calcStarfieldPosition();
+		hud.update();
 		
 		p_list.add(starField);
 		p_list.add(hud);
@@ -178,7 +177,7 @@ public class SpaceDrawListGenerator2 implements IDrawListGenerator{
 	
 	public void setDimension(final Dimension2DI p_dimension)
 	{
-		hud.getDimension().assign(p_dimension);
+		hud.setDimension(new Dimension2DI(p_dimension.Width(), p_dimension.Height()));
 		starField.assignDimension(hud.getDimension());
 		
 		double bufferedWidth = (double) (p_dimension.Width() + DEF_BUFF_PIXELS)  / (double) (sizeFactor);
