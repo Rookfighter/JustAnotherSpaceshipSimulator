@@ -1,12 +1,11 @@
 package stesta.view.hud;
 
-import lib.graphics.IDrawable;
-import lib.utils.integer.Dimension2DI;
+import java.util.List;
 
-public interface ISpaceHUD extends IDrawable, IUpdateable{
+public interface ISpaceHUD extends IHudElement{
 
-	Dimension2DI getDimension();
-	void setDimension(final Dimension2DI p_dimension);
-	
-	void update();
+	void addElement(final IHudElement p_element);
+	void removeElement(final IHudElement p_element);
+	void clearElements();
+	List<IHudElement> getElements();
 }

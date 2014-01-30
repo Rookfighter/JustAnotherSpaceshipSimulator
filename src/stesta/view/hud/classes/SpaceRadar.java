@@ -8,10 +8,12 @@ import java.util.List;
 import stesta.controller.rocket.IRocketController;
 import stesta.entities.objects.IRocket;
 import stesta.entities.objects.ISpaceObject;
+import stesta.view.hud.AHudElement;
 import stesta.view.hud.IRadar;
+import lib.utils.integer.Dimension2DI;
 import lib.utils.integer.Position2DI;
 
-public class SpaceRadar implements IRadar {
+public class SpaceRadar extends AHudElement implements IRadar {
 
 	private static final int DEF_COOLDOWN_LIMIT = 240;
 	private static final int MAX_TRANSPARENT = 255;
@@ -19,7 +21,6 @@ public class SpaceRadar implements IRadar {
 	private static final Color RADAR_FOREGROUND = new Color(154,205,50);
 	private static final Color RADAR_BACKGROUND = new Color(244,238,224);
 	
-	private int drawOrder;
 	private IRocketController player;
 	
 	private int radius;
@@ -35,8 +36,10 @@ public class SpaceRadar implements IRadar {
 	private float sizeFactor;
 	
 	
-	public SpaceRadar()
+	public SpaceRadar(final IRocketController p_player)
 	{
+		super();
+		player = p_player;
 		coolDownLimit = DEF_COOLDOWN_LIMIT;
 		cooldown = 0;
 		distanceList = new LinkedList<RadarObject>();
@@ -131,24 +134,6 @@ public class SpaceRadar implements IRadar {
 	}
 
 	@Override
-	public int getDrawOrder()
-	{
-		return drawOrder;
-	}
-
-	@Override
-	public void setDrawOrder(int p_drawOrder)
-	{
-		drawOrder = p_drawOrder;
-	}
-
-	@Override
-	public void setDefaultDrawOrder()
-	{
-		drawOrder = Integer.MAX_VALUE;
-	}
-
-	@Override
 	public void setRadius(int p_radius)
 	{
 		radius = p_radius;
@@ -186,16 +171,22 @@ public class SpaceRadar implements IRadar {
 		return range;
 	}
 
-	@Override
-	public void setPlayer(IRocketController p_player)
-	{
-		player = p_player;
-	}
-
 	private void updateSizeFactor()
 	{
 		sizeFactor = ((float) radius) / range;
 	}
-
+	
+	@Override
+	public void setDimension(final Dimension2DI p_dimension)
+	{
+		super.setDimension(p_dimension);
+		updateRadiusAndPosition();
+	}
+	
+	private void updateRadiusAndPosition()
+	{
+		setRadius(getDimension().Width() / (4 * 2));
+		getPosition().set(radius, getDimension().Height() - radius);
+	}
 	
 }

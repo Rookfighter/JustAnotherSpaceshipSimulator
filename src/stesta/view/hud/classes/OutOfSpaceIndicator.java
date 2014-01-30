@@ -7,12 +7,15 @@ import org.jbox2d.common.Vec2;
 import stesta.controller.rocket.IRocketController;
 import stesta.entities.objects.IRocket;
 import stesta.entities.world.ISpace;
+import stesta.view.hud.AHudElement;
 import stesta.view.hud.IArrow;
 import stesta.view.hud.IOutOfSpaceIndicator;
 import lib.utils.integer.Dimension2DI;
 
-public class OutOfSpaceIndicator implements IOutOfSpaceIndicator {
+public class OutOfSpaceIndicator extends AHudElement implements IOutOfSpaceIndicator {
 
+	private final static int DEF_ARROW_DISTANCE = 32; 
+	
 	private int drawOrder;
 	
 	private IRocketController player;
@@ -21,15 +24,13 @@ public class OutOfSpaceIndicator implements IOutOfSpaceIndicator {
 	private boolean outOfSpace;
 	private Vec2 toMid;
 	
-	private Dimension2DI dimension;
-	
 	private IArrow arrow;
 	
 	public OutOfSpaceIndicator(final IRocketController p_player)
 	{
+		super();
 		player = p_player;
 		toMid = new Vec2();
-		dimension = new Dimension2DI();
 		arrow = new IndicatorArrow();
 	}
 	
@@ -58,7 +59,20 @@ public class OutOfSpaceIndicator implements IOutOfSpaceIndicator {
 	private void drawIndicator(final Graphics p_graphic)
 	{
 		arrow.assignDirection(toMid);
+		calcArrowPosition();
 		arrow.draw(p_graphic);
+	}
+	
+	private void calcArrowPosition()
+	{
+		int x = getDimension().Width() / 2;
+		int y = getDimension().Height() / 2;
+		
+		float lengthFac = (DEF_ARROW_DISTANCE + arrow.getLength() / 2) / toMid.length();
+		x += toMid.x * lengthFac;
+		y += toMid.y * lengthFac;
+		
+		arrow.setPosition(x,y);
 	}
 
 	@Override
@@ -80,17 +94,10 @@ public class OutOfSpaceIndicator implements IOutOfSpaceIndicator {
 	}
 
 	@Override
-	public Dimension2DI getDimension()
+	public void setDimension(final Dimension2DI p_dimension)
 	{
-		return dimension;
-	}
-
-	@Override
-	public void assignDimension(Dimension2DI p_dimension)
-	{
-		dimension.assign(p_dimension);
-		arrow.setLength(dimension.Height() / 5);
-		arrow.setPosition(dimension.Width() / 2, dimension.Height() / 2);
+		super.setDimension(p_dimension);
+		arrow.setLength(getDimension().Height() / 5);
 	}
 
 }

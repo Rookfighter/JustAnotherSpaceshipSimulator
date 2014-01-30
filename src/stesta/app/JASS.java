@@ -18,7 +18,7 @@ public class JASS {
 		app.waitForThread();
 	}
 	
-	private static final int ASTEROID_COUNT = 10;
+	private static final int ASTEROID_COUNT = 400;
 	private GameFactory gameFactory;
 	
 	private JASS()
