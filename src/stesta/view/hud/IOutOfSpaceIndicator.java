@@ -3,10 +3,8 @@ package stesta.view.hud;
 import lib.graphics.IDrawable;
 import lib.utils.integer.Dimension2DI;
 
-public interface ISpaceHUD extends IDrawable, IUpdateable{
+public interface IOutOfSpaceIndicator extends IDrawable, IUpdateable{
 
+	void assignDimension(final Dimension2DI p_dimension);
 	Dimension2DI getDimension();
-	void setDimension(final Dimension2DI p_dimension);
-	
-	void update();
 }

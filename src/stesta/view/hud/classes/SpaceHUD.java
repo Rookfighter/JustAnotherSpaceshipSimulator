@@ -4,6 +4,7 @@ import java.awt.Graphics;
 
 import lib.utils.integer.Dimension2DI;
 import stesta.controller.rocket.IRocketController;
+import stesta.view.hud.IOutOfSpaceIndicator;
 import stesta.view.hud.IRadar;
 import stesta.view.hud.ISpaceHUD;
 
@@ -14,21 +15,31 @@ public class SpaceHUD implements ISpaceHUD {
 	private Dimension2DI dimension;
 	private int drawOrder;
 	private IRadar radar;
+	private IOutOfSpaceIndicator indicator;
 	private IRocketController player;
 	
 	public SpaceHUD(final IRocketController p_player)
 	{
+		indicator = new OutOfSpaceIndicator(p_player);
 		radar = new SpaceRadar();
 		radar.setRange(DEF_RADAR_RANGE);
 		setDimension(new Dimension2DI());
 		setDefaultDrawOrder();
 		setPlayer(p_player);
 	}
+	
+	@Override
+	public void update()
+	{
+		radar.update();
+		indicator.update();
+	}
 
 	@Override
 	public void draw(Graphics p_graphic)
 	{
 		radar.draw(p_graphic);
+		indicator.draw(p_graphic);
 	}
 
 	@Override
@@ -61,6 +72,7 @@ public class SpaceHUD implements ISpaceHUD {
 	{
 		dimension = p_dimension;
 		updateRadar();
+		indicator.assignDimension(dimension);
 	}
 	
 	private void updateRadar()
@@ -74,12 +86,6 @@ public class SpaceHUD implements ISpaceHUD {
 		radar.getPosition().set(radius, dimension.Height() - radius);
 	}
 
-	@Override
-	public void update()
-	{
-		radar.generateRadarImage();
-	}
-	
 	private void setPlayer(final IRocketController p_player)
 	{
 		player = p_player;

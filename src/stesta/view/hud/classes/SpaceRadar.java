@@ -95,7 +95,7 @@ public class SpaceRadar implements IRadar {
 	}
 	
 	@Override
-	public void generateRadarImage()
+	public void update()
 	{
 		cooldown %= coolDownLimit;
 		if(cooldown == 0)
