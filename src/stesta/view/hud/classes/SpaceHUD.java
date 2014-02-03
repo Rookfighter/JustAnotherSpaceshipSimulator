@@ -26,6 +26,7 @@ public class SpaceHUD extends AHudElement implements ISpaceHUD {
 		IRadar radar = new SpaceRadar(p_player);
 		radar.setRange(DEF_RADAR_RANGE);
 		addElement(radar);
+		addElement(new SpaceLifebar(p_player));
 	}
 	
 	@Override
@@ -43,18 +44,18 @@ public class SpaceHUD extends AHudElement implements ISpaceHUD {
 	}
 	
 	@Override
-	public void setDimension(final Dimension2DI p_dimension)
+	public void setHudDimension(final Dimension2DI p_dimension)
 	{
-		super.setDimension(p_dimension);
+		super.setHudDimension(p_dimension);
 		for(IHudElement element : elements)
-			element.setDimension(getDimension());
+			element.setHudDimension(getHudDimension());
 	}
 
 	@Override
 	public void addElement(IHudElement p_element)
 	{
 		elements.add(p_element);
-		p_element.setDimension(getDimension());
+		p_element.setHudDimension(getHudDimension());
 	}
 
 	@Override

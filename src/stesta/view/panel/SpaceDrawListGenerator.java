@@ -119,8 +119,8 @@ public class SpaceDrawListGenerator implements IDrawListGenerator{
 	{
 		float diffx =  p_object.getPosition().x - player.getControlledObject().getPosition().x;
 		float diffy =  p_object.getPosition().y - player.getControlledObject().getPosition().y;
-		int x = (int) (sizeFactor * diffx +  hud.getDimension().Width() / 2 - p_sprite.getDimension().Width() / 2);
-		int y = (int) (sizeFactor * diffy + hud.getDimension().Height() / 2 - p_sprite.getDimension().Height() / 2);
+		int x = (int) (sizeFactor * diffx +  hud.getHudDimension().Width() / 2 - p_sprite.getDimension().Width() / 2);
+		int y = (int) (sizeFactor * diffy + hud.getHudDimension().Height() / 2 - p_sprite.getDimension().Height() / 2);
 		
 		p_sprite.getPosition().set(x, y);
 	}
@@ -177,8 +177,8 @@ public class SpaceDrawListGenerator implements IDrawListGenerator{
 	
 	public void setDimension(final Dimension2DI p_dimension)
 	{
-		hud.setDimension(new Dimension2DI(p_dimension.Width(), p_dimension.Height()));
-		starField.assignDimension(hud.getDimension());
+		hud.setHudDimension(new Dimension2DI(p_dimension.Width(), p_dimension.Height()));
+		starField.assignDimension(hud.getHudDimension());
 		
 		double bufferedWidth = (double) (p_dimension.Width() + DEF_BUFF_PIXELS)  / (double) (sizeFactor);
 		double bufferedHeight = (double) (p_dimension.Height() + DEF_BUFF_PIXELS) / (double) (sizeFactor);

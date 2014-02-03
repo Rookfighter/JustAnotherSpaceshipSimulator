@@ -25,6 +25,8 @@ public class SpaceController implements ISpaceController {
 	public void executeLogics()
 	{
 		space.getPhysicsWorld().step(space.getTimeStep(), DEF_VEL_ITERATIONS, DEF_POS_ITERATIONS);
+		space.addObjects();
+		space.removeObjects();
 		correctPositions();
 	}
 	

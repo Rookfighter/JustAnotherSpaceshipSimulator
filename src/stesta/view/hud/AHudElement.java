@@ -5,12 +5,12 @@ import lib.utils.integer.Dimension2DI;
 public abstract class AHudElement implements IHudElement {
 
 	private int drawOrder;
-	private Dimension2DI dimension;
+	private Dimension2DI hudDimension;
 	
 	public AHudElement()
 	{
 		setDefaultDrawOrder();
-		dimension = new Dimension2DI();
+		hudDimension = new Dimension2DI();
 	}
 	
 	@Override
@@ -32,15 +32,15 @@ public abstract class AHudElement implements IHudElement {
 	}
 
 	@Override
-	public void setDimension(Dimension2DI p_dimension)
+	public void setHudDimension(Dimension2DI p_dimension)
 	{
-		dimension = p_dimension;
+		hudDimension = p_dimension;
 	}
 
 	@Override
-	public Dimension2DI getDimension()
+	public Dimension2DI getHudDimension()
 	{
-		return dimension;
+		return hudDimension;
 	}
 
 }

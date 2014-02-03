@@ -21,6 +21,9 @@ public interface ISpace {
 	void removeObject(final ISpaceObject p_object);
 	void clear();
 	
+	void removeObjects();
+	void addObjects();
+	
 	Dimension2DI getDimension();
 	
 	World getPhysicsWorld();

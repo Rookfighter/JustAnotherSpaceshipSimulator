@@ -177,16 +177,16 @@ public class SpaceRadar extends AHudElement implements IRadar {
 	}
 	
 	@Override
-	public void setDimension(final Dimension2DI p_dimension)
+	public void setHudDimension(final Dimension2DI p_dimension)
 	{
-		super.setDimension(p_dimension);
+		super.setHudDimension(p_dimension);
 		updateRadiusAndPosition();
 	}
 	
 	private void updateRadiusAndPosition()
 	{
-		setRadius(getDimension().Width() / (4 * 2));
-		getPosition().set(radius, getDimension().Height() - radius);
+		setRadius(getHudDimension().Width() / (4 * 2));
+		getPosition().set(radius, getHudDimension().Height() - radius);
 	}
 	
 }

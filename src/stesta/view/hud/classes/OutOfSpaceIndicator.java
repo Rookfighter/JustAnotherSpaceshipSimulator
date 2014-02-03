@@ -65,8 +65,8 @@ public class OutOfSpaceIndicator extends AHudElement implements IOutOfSpaceIndic
 	
 	private void calcArrowPosition()
 	{
-		int x = getDimension().Width() / 2;
-		int y = getDimension().Height() / 2;
+		int x = getHudDimension().Width() / 2;
+		int y = getHudDimension().Height() / 2;
 		
 		float lengthFac = (DEF_ARROW_DISTANCE + arrow.getLength() / 2) / toMid.length();
 		x += toMid.x * lengthFac;
@@ -94,10 +94,10 @@ public class OutOfSpaceIndicator extends AHudElement implements IOutOfSpaceIndic
 	}
 
 	@Override
-	public void setDimension(final Dimension2DI p_dimension)
+	public void setHudDimension(final Dimension2DI p_dimension)
 	{
-		super.setDimension(p_dimension);
-		arrow.setLength(getDimension().Height() / 5);
+		super.setHudDimension(p_dimension);
+		arrow.setLength(getHudDimension().Height() / 5);
 	}
 
 }

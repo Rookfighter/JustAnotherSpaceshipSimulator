@@ -1,6 +1,6 @@
 package stesta.entities.objects;
 
-public interface IRocket extends IMovingSpaceObject {
+public interface IRocket extends IMovingSpaceObject, IHitable {
 
 	float getDirection();
 	

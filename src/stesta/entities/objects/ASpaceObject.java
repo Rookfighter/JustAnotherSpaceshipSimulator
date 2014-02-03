@@ -10,29 +10,28 @@ import org.jbox2d.dynamics.World;
 public abstract class ASpaceObject implements ISpaceObject {
 
 	private Body body;
-	private EObjectTypes type;
 	
-	public ASpaceObject(final EObjectTypes p_type)
+	public ASpaceObject()
 	{
 		body = null;
-		type = p_type;
 	}
 	
 	@Override
-	public void initialize(final World p_world)
+	public void createBody(final World p_world)
 	{
-		if(isInitialized())
-			throw new IllegalStateException(String.format("%s-object has already been initialized.", getClass().getName()));
+		if(hasBody())
+			throw new IllegalStateException(String.format("%s-object has already a body.", getClass().getName()));
 		
 		body = p_world.createBody(getBodyDef());
 		body.createFixture(getFixtureDef());
+		body.setUserData(this);
 	}
 	
 	protected abstract BodyDef getBodyDef();
 	protected abstract FixtureDef getFixtureDef();
 	
 	@Override
-	public boolean isInitialized()
+	public boolean hasBody()
 	{
 		return body != null;
 	}
@@ -54,11 +53,4 @@ public abstract class ASpaceObject implements ISpaceObject {
 	{
 		return body.getPosition();
 	}
-	
-	@Override
-	public EObjectTypes type()
-	{
-		return type;
-	}
-	
 }

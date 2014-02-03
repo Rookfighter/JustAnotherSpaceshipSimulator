@@ -7,7 +7,6 @@ import org.jbox2d.dynamics.FixtureDef;
 
 import stesta.entities.objects.AMovingSpaceObject;
 import stesta.entities.objects.IRocket;
-import stesta.entities.objects.EObjectTypes;
 
 public class Rocket extends AMovingSpaceObject implements IRocket{
 
@@ -16,15 +15,21 @@ public class Rocket extends AMovingSpaceObject implements IRocket{
 	private static final float DEF_DENSITY = 0.6f;
 	private static final float DEF_RESTITUTION = 0.5f;
 	private static final float MAX_ACCELERATE_FORCE = 10.0f;
+	private static final int DEF_MAX_LIFEPOINTS = 1000;
 	
 	private float radius;
 	private float accelerateForce;
 	
+	private int lifePoints;
+	private int maxLifePoints;
+	
 	public Rocket()
 	{
-		super(EObjectTypes.ROCKET);
+		super();
 		radius = DEF_RADIUS;
 		accelerateForce = 0;
+		maxLifePoints = DEF_MAX_LIFEPOINTS;
+		lifePoints = maxLifePoints;
 	}
 
 	@Override
@@ -82,6 +87,53 @@ public class Rocket extends AMovingSpaceObject implements IRocket{
 	public void setAccelerateForce(final float p_accelerateForce)
 	{
 		accelerateForce = p_accelerateForce;
+	}
+
+	@Override
+	public int getLifePoints()
+	{
+		return lifePoints;
+	}
+
+	@Override
+	public void setLifePoints(final int p_lifePoints)
+	{
+		lifePoints = p_lifePoints;
+	}
+
+	@Override
+	public void setMaxLifePoints(final int p_lifePoints)
+	{
+		if(p_lifePoints < 0)
+			throw new IllegalArgumentException(String.format("Rocket max lifepoints cannot be negative: %d.", p_lifePoints));
+		maxLifePoints = p_lifePoints;
+		incLifePoints(0);
+	}
+
+	@Override
+	public int getMaxLifePoints()
+	{
+		return maxLifePoints;
+	}
+
+	@Override
+	public void decLifePoints(int p_value)
+	{
+		lifePoints -= p_value;
+	}
+
+	@Override
+	public void incLifePoints(int p_value)
+	{
+		lifePoints += p_value;
+		if(lifePoints > maxLifePoints)
+			lifePoints = maxLifePoints;
+	}
+
+	@Override
+	public boolean isDead()
+	{
+		return lifePoints <= 0;
 	}
 
 }

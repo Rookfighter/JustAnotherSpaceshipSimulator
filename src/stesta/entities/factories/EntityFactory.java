@@ -37,7 +37,7 @@ public class EntityFactory {
 	public IRocket createRocket()
 	{
 		Rocket result = new Rocket();
-		result.initialize(space.getPhysicsWorld());
+		result.createBody(space.getPhysicsWorld());
 		space.addObject(result);
 		return result;
 	}
@@ -45,7 +45,7 @@ public class EntityFactory {
 	public IAsteroid createAsteroid()
 	{
 		Asteroid result = new Asteroid();
-		result.initialize(space.getPhysicsWorld());
+		result.createBody(space.getPhysicsWorld());
 		space.addObject(result);
 		return result;
 	}
@@ -59,7 +59,7 @@ public class EntityFactory {
 		Vec2 velocity = createRandomAsteroidVelocity();
 		
 		result.setRadius(radius);
-		result.initialize(space.getPhysicsWorld());
+		result.createBody(space.getPhysicsWorld());
 		result.getBody().setAngularVelocity(angleVelocity);
 		result.getBody().setLinearVelocity(velocity);
 		

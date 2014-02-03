@@ -27,6 +27,9 @@ public class Space implements ISpace {
 	private List<ISpaceObject> miscObjectList;
 	private List<ISpaceObject> objectList;
 	
+	private List<ISpaceObject> toAdd;
+	private List<ISpaceObject> toRemove;
+	
 	private float timeStep;
 
 	public Space()
@@ -42,6 +45,8 @@ public class Space implements ISpace {
 		rocketList = new LinkedList<IRocket>();
 		miscObjectList = new LinkedList<ISpaceObject>();
 		objectList = new LinkedList<ISpaceObject>();
+		toAdd = new LinkedList<ISpaceObject>();
+		toRemove = new LinkedList<ISpaceObject>();
 		initPhysicsWorld();
 	}
 	
@@ -76,6 +81,25 @@ public class Space implements ISpace {
 	@Override
 	public void addObject(ISpaceObject p_object)
 	{
+		toAdd.add(p_object);
+	}
+
+	@Override
+	public void removeObject(ISpaceObject p_object)
+	{
+		toRemove.add(p_object);
+	}
+	
+	@Override
+	public void addObjects()
+	{
+		for(ISpaceObject object : toAdd)
+			add(object);
+		toAdd.clear();
+	}
+	
+	private void add(ISpaceObject p_object)
+	{
 		if(p_object instanceof IAsteroid)
 			asteroidList.add((IAsteroid) p_object);
 		else if(p_object instanceof IRocket)
@@ -83,9 +107,16 @@ public class Space implements ISpace {
 		else
 			miscObjectList.add(p_object);
 	}
-
+	
 	@Override
-	public void removeObject(ISpaceObject p_object)
+	public void removeObjects()
+	{
+		for(ISpaceObject object : toRemove)
+			remove(object);
+		toRemove.clear();
+	}
+	
+	private void remove(ISpaceObject p_object)
 	{
 		physicsWorld.destroyBody(p_object.getBody());
 		if(p_object instanceof IAsteroid)
@@ -95,7 +126,7 @@ public class Space implements ISpace {
 		else
 			miscObjectList.remove(p_object);
 	}
-	
+
 	@Override
 	public void clear()
 	{

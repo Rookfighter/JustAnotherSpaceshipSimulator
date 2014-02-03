@@ -6,14 +6,12 @@ import org.jbox2d.dynamics.World;
 
 public interface ISpaceObject {
 
-	void initialize(final World p_world);
-	boolean isInitialized();
+	void createBody(final World p_world);
+	boolean hasBody();
 	
 	Vec2 getPosition();
 	void setPosition(final Vec2 p_position);
 	
 	Body getBody();
-	
-	EObjectTypes type();
 	
 }

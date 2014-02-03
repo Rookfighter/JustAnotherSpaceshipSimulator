@@ -6,7 +6,6 @@ import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.FixtureDef;
 
 import stesta.entities.objects.AMovingSpaceObject;
-import stesta.entities.objects.EObjectTypes;
 import stesta.entities.objects.IAsteroid;
 
 public class Asteroid extends AMovingSpaceObject implements IAsteroid{
@@ -20,14 +19,14 @@ public class Asteroid extends AMovingSpaceObject implements IAsteroid{
 	
 	public Asteroid()
 	{
-		super(EObjectTypes.ASTEROID);
+		super();
 		radius = DEF_RADIUS;
 	}
 	
 	@Override
 	public void setRadius(final float p_radius)
 	{
-		if(isInitialized())
+		if(hasBody())
 			throw new IllegalStateException("Asteroid has already been initialized.");
 		if(p_radius <= 0)
 			throw new IllegalArgumentException("Asteroid radius cannot be zero or negative.");
