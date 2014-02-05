@@ -11,7 +11,8 @@ import stesta.entities.world.ISpace;
 
 public class SpaceContactListener implements ISpaceContactListener{
 
-	private static final float DAMAGE_FACTOR = 30.0f;
+	private static final float DAMAGE_DENOM = 3.0f;
+	private static final float DAMAGE_BASE = 3.0f;
 	
 	private ISpace space;
 	
@@ -79,18 +80,25 @@ public class SpaceContactListener implements ISpaceContactListener{
 	{
 		if(p_rocket.getLifePoints() > 0)
 		{
-			float impulseSum = 0.0f;
-			for(float impulse : p_impulse.normalImpulses)
-				impulseSum += impulse;
-			impulseSum *= DAMAGE_FACTOR;
+			float damage = getRocketDamageExponential(p_impulse);
 			
-			System.out.printf("Damage: %.2f \n", impulseSum);
-			p_rocket.decLifePoints((int) impulseSum);
+			System.out.printf("Damage: %.2f \n", damage);
+			p_rocket.decLifePoints((int) damage);
 			if(p_rocket.isDead())
 				space.removeObject(p_rocket);
 		}
 	}
-
+	
+	private float getRocketDamageExponential(ContactImpulse p_impulse)
+	{
+		float impulseSum = 0.0f;
+		for(float impulse : p_impulse.normalImpulses)
+			impulseSum += impulse;
+		
+		//exponential function
+		return (float) Math.pow(DAMAGE_BASE, impulseSum / DAMAGE_DENOM);
+	}
+	
 	@Override
 	public void preSolve(Contact p_contact, Manifold p_manifold)
 	{
