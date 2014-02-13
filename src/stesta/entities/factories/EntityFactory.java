@@ -13,7 +13,7 @@ import stesta.entities.world.classes.Space;
 
 public class EntityFactory {
 
-	private static final float MIN_ASTEROID_RADIUS = 0.4f;
+	private static final float MIN_ASTEROID_RADIUS = Asteroid.MIN_RADIUS;
 	private static final float MAX_ASTEROID_RADIUS = 2.0f;
 	private static final float MIN_ASTEROID_VELOCITY = 5.0f;
 	private static final float MAX_ASTEROID_VELOCITY = 10.0f;
@@ -45,6 +45,15 @@ public class EntityFactory {
 	public IAsteroid createAsteroid()
 	{
 		Asteroid result = new Asteroid();
+		result.createBody(space.getPhysicsWorld());
+		space.addObject(result);
+		return result;
+	}
+	
+	public IAsteroid createAsteroid(final float p_radius)
+	{
+		Asteroid result = new Asteroid();
+		result.setRadius(p_radius);
 		result.createBody(space.getPhysicsWorld());
 		space.addObject(result);
 		return result;

@@ -1,35 +1,49 @@
 package stesta.entities.objects.classes;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.FixtureDef;
 
-import stesta.entities.objects.AMovingSpaceObject;
+import stesta.entities.objects.AHitableMovingSpaceObject;
 import stesta.entities.objects.IRocket;
+import stesta.entities.weapons.IWeapon;
+import stesta.entities.weapons.classes.LaserCannon;
 
-public class Rocket extends AMovingSpaceObject implements IRocket{
+public class Rocket extends AHitableMovingSpaceObject implements IRocket{
 
 	public static final float DEF_RADIUS = 0.5f;
+	public static final int LASERCANNON = 0;
+	
 	private static final float DEF_FRICTION = 0.3f;
 	private static final float DEF_DENSITY = 0.6f;
 	private static final float DEF_RESTITUTION = 0.5f;
 	private static final float MAX_ACCELERATE_FORCE = 10.0f;
 	private static final int DEF_MAX_LIFEPOINTS = 1000;
+	private static final int DEF_WEAPON_COUNT = 2;
 	
 	private float radius;
 	private float accelerateForce;
 	
-	private int lifePoints;
-	private int maxLifePoints;
+	private List<IWeapon> weapons;
 	
 	public Rocket()
 	{
 		super();
 		radius = DEF_RADIUS;
 		accelerateForce = 0;
-		maxLifePoints = DEF_MAX_LIFEPOINTS;
-		lifePoints = maxLifePoints;
+		setMaxLifePoints(DEF_MAX_LIFEPOINTS);
+		setLifePoints(getMaxLifePoints());
+		weapons = new ArrayList<IWeapon>(DEF_WEAPON_COUNT);
+		initWeapons();
+	}
+	
+	private void initWeapons()
+	{
+		weapons.add(new LaserCannon());
 	}
 
 	@Override
@@ -44,17 +58,18 @@ public class Rocket extends AMovingSpaceObject implements IRocket{
 	}
 
 	@Override
-	protected FixtureDef getFixtureDef()
+	protected FixtureDef[] getFixtureDef()
 	{
 		
-		FixtureDef result = new FixtureDef();
+		FixtureDef result[] = new FixtureDef[1];
+		result[0] = new FixtureDef();
 		CircleShape cs = new CircleShape();
 		cs.setRadius(radius);
 		
-		result.shape = cs;
-		result.density = DEF_DENSITY;
-		result.restitution = DEF_RESTITUTION;
-		result.friction = DEF_FRICTION;
+		result[0].shape = cs;
+		result[0].density = DEF_DENSITY;
+		result[0].restitution = DEF_RESTITUTION;
+		result[0].friction = DEF_FRICTION;
 		
 		return result;
 	}
@@ -90,50 +105,15 @@ public class Rocket extends AMovingSpaceObject implements IRocket{
 	}
 
 	@Override
-	public int getLifePoints()
+	public IWeapon getWeapon(final int p_idx)
 	{
-		return lifePoints;
+		return weapons.get(p_idx);
 	}
 
 	@Override
-	public void setLifePoints(final int p_lifePoints)
+	public List<IWeapon> getWeapons()
 	{
-		lifePoints = p_lifePoints;
-	}
-
-	@Override
-	public void setMaxLifePoints(final int p_lifePoints)
-	{
-		if(p_lifePoints < 0)
-			throw new IllegalArgumentException(String.format("Rocket max lifepoints cannot be negative: %d.", p_lifePoints));
-		maxLifePoints = p_lifePoints;
-		incLifePoints(0);
-	}
-
-	@Override
-	public int getMaxLifePoints()
-	{
-		return maxLifePoints;
-	}
-
-	@Override
-	public void decLifePoints(int p_value)
-	{
-		lifePoints -= p_value;
-	}
-
-	@Override
-	public void incLifePoints(int p_value)
-	{
-		lifePoints += p_value;
-		if(lifePoints > maxLifePoints)
-			lifePoints = maxLifePoints;
-	}
-
-	@Override
-	public boolean isDead()
-	{
-		return lifePoints <= 0;
+		return weapons;
 	}
 
 }

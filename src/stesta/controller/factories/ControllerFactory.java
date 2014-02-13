@@ -1,9 +1,11 @@
 package stesta.controller.factories;
 
+import stesta.controller.IController;
 import stesta.controller.IGameController;
 import stesta.controller.ISpaceContactListener;
 import stesta.controller.ISpaceController;
 import stesta.controller.classes.GameController;
+import stesta.controller.classes.GlobalAsteroidController;
 import stesta.controller.classes.SpaceContactListener;
 import stesta.controller.classes.SpaceController;
 import stesta.controller.rocket.IRocketController;
@@ -16,6 +18,7 @@ public class ControllerFactory {
 	private ISpaceController spaceController;
 	private IGameController gameController;
 	private ISpaceContactListener contactListener;
+	private IController asteroidController;
 	
 	public ControllerFactory()
 	{
@@ -23,6 +26,7 @@ public class ControllerFactory {
 		createSpaceController();
 		createGameController();
 		createContactListener();
+		createAsteroidController();
 	}
 	
 	private void createSpaceController()
@@ -42,6 +46,12 @@ public class ControllerFactory {
 		contactListener = new SpaceContactListener();
 		contactListener.setSpace(entityFactory.getSpace());
 		entityFactory.getSpace().getPhysicsWorld().setContactListener(contactListener);
+	}
+	
+	private void createAsteroidController()
+	{
+		asteroidController = new GlobalAsteroidController(entityFactory);
+		gameController.addController(asteroidController);
 	}
 	
 	public EntityFactory getEntityFactory()
@@ -68,5 +78,10 @@ public class ControllerFactory {
 	public IGameController getGameController()
 	{
 		return gameController;
+	}
+	
+	public IController getAsteroidController()
+	{
+		return asteroidController;
 	}
 }

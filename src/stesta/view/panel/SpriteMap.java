@@ -8,8 +8,10 @@ import lib.utils.DeltaTime;
 import stesta.entities.objects.IAsteroid;
 import stesta.entities.objects.IRocket;
 import stesta.entities.objects.ISpaceObject;
+import stesta.entities.weapons.classes.LaserShot;
 import stesta.view.multimedia.MultimediaRocket;
 import stesta.view.sprites.AsteroidSprite;
+import stesta.view.sprites.LaserShotSprite;
 
 public class SpriteMap {
 
@@ -39,6 +41,8 @@ public class SpriteMap {
 			return new MultimediaRocket(delta);
 		else if(p_object instanceof IAsteroid)
 			return new AsteroidSprite();
+		else if(p_object instanceof LaserShot)
+			return new LaserShotSprite();
 		else
 			return null; //TODO default sprite
 	}

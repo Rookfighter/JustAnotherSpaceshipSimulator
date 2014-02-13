@@ -4,15 +4,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import stesta.controller.rocket.IRocketController;
-import stesta.entities.objects.IAsteroid;
-import stesta.entities.objects.IMovingSpaceObject;
-import stesta.entities.objects.IRocket;
-import stesta.entities.objects.ISpaceObject;
-import stesta.view.drawable.StarField;
-import stesta.view.hud.ISpaceHUD;
-import stesta.view.hud.classes.SpaceHUD;
-import stesta.view.multimedia.MultimediaRocket;
 import lib.graphics.IDrawable;
 import lib.graphics.panel.DrawOrderComparator;
 import lib.graphics.panel.IDrawListGenerator;
@@ -22,6 +13,16 @@ import lib.utils.TimeAccount;
 import lib.utils.doubl.Dimension2DF;
 import lib.utils.integer.Dimension2DI;
 import lib.utils.integer.Position2DI;
+import stesta.controller.rocket.IRocketController;
+import stesta.entities.objects.IAsteroid;
+import stesta.entities.objects.IMovingSpaceObject;
+import stesta.entities.objects.IRocket;
+import stesta.entities.objects.ISpaceObject;
+import stesta.entities.weapons.IProjectile;
+import stesta.view.drawable.StarField;
+import stesta.view.hud.ISpaceHUD;
+import stesta.view.hud.classes.SpaceHUD;
+import stesta.view.multimedia.MultimediaRocket;
 
 public class SpaceDrawListGenerator implements IDrawListGenerator{
 	
@@ -147,6 +148,8 @@ public class SpaceDrawListGenerator implements IDrawListGenerator{
 			setAsteroidDimension((IAsteroid) p_object, p_sprite);
 		else if(p_object instanceof IRocket)
 			setRocketDimension((IRocket) p_object, p_sprite);
+		else if(p_object instanceof IProjectile)
+			setProjectileDimension((IProjectile) p_object, p_sprite);
 	}
 	
 	private void setAsteroidDimension(final IAsteroid p_asteroid, final ISprite p_sprite)
@@ -157,6 +160,11 @@ public class SpaceDrawListGenerator implements IDrawListGenerator{
 	private void setRocketDimension(final IRocket p_rocket, final ISprite p_sprite)
 	{
 		p_sprite.getDimension().set((int) (p_rocket.getRadius() * sizeFactor * 2), (int) (p_rocket.getRadius() * sizeFactor * 2));
+	}
+	
+	private void setProjectileDimension(final IProjectile p_projectile, final ISprite p_sprite)
+	{
+		p_sprite.getDimension().set((int) (p_projectile.getLength() * sizeFactor), (int) (p_projectile.getLength() * sizeFactor));
 	}
 	
 	private void addStaticObjects(final List<IDrawable> p_list)
@@ -180,8 +188,8 @@ public class SpaceDrawListGenerator implements IDrawListGenerator{
 		hud.setHudDimension(new Dimension2DI(p_dimension.Width(), p_dimension.Height()));
 		starField.assignDimension(hud.getHudDimension());
 		
-		double bufferedWidth = (double) (p_dimension.Width() + DEF_BUFF_PIXELS)  / (double) (sizeFactor);
-		double bufferedHeight = (double) (p_dimension.Height() + DEF_BUFF_PIXELS) / (double) (sizeFactor);
+		double bufferedWidth = (p_dimension.Width() + DEF_BUFF_PIXELS)  / (sizeFactor);
+		double bufferedHeight = (p_dimension.Height() + DEF_BUFF_PIXELS) / (sizeFactor);
 		bufferedFoV.set(bufferedWidth, bufferedHeight);
 	}
 

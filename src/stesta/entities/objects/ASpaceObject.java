@@ -23,12 +23,13 @@ public abstract class ASpaceObject implements ISpaceObject {
 			throw new IllegalStateException(String.format("%s-object has already a body.", getClass().getName()));
 		
 		body = p_world.createBody(getBodyDef());
-		body.createFixture(getFixtureDef());
+		for(FixtureDef fixture : getFixtureDef())
+			body.createFixture(fixture);
 		body.setUserData(this);
 	}
 	
 	protected abstract BodyDef getBodyDef();
-	protected abstract FixtureDef getFixtureDef();
+	protected abstract FixtureDef[] getFixtureDef();
 	
 	@Override
 	public boolean hasBody()

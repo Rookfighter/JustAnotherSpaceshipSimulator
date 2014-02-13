@@ -1,6 +1,7 @@
 package stesta.entities.world;
 
 import java.util.List;
+import java.util.Set;
 
 import lib.utils.integer.Dimension2DI;
 
@@ -23,6 +24,9 @@ public interface ISpace {
 	
 	void removeObjects();
 	void addObjects();
+	
+	void splitAsteroid(final IAsteroid p_asteroid);
+	Set<IAsteroid> asteroidsToSplit();
 	
 	Dimension2DI getDimension();
 	

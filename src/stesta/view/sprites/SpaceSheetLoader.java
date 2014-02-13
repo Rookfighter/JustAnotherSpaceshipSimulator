@@ -6,9 +6,9 @@ public class SpaceSheetLoader extends SpriteSheetLoader{
 	
 	public SpaceSheetLoader()
 	{
-		super(2);
+		super(3);
 		addSpriteSheet(RocketSpriteSheet.getInstance());
 		addSpriteSheet(AsteroidSpriteSheet.getInstance());
+		addSpriteSheet(ProjectileSpriteSheet.getInstance());
 	}
-
 }

@@ -6,6 +6,10 @@ import org.jbox2d.common.Vec2;
 import stesta.controller.AObjectController;
 import stesta.controller.rocket.IRocketController;
 import stesta.entities.objects.IRocket;
+import stesta.entities.objects.classes.Rocket;
+import stesta.entities.weapons.IWeapon;
+import stesta.entities.weapons.classes.LaserCannon;
+import stesta.entities.weapons.classes.LaserShot;
 
 public class RocketController extends AObjectController<IRocket> implements IRocketController {
 
@@ -22,6 +26,7 @@ public class RocketController extends AObjectController<IRocket> implements IRoc
 	@Override
 	public void executeLogics()
 	{
+		processWeapons();
 		accelerateRocket();
 		turnRocket();
 	}
@@ -38,6 +43,53 @@ public class RocketController extends AObjectController<IRocket> implements IRoc
 	{
 		float angVel = angularVelocity / getSpace().getTimeStep();
 		getControlledObject().getBody().setAngularVelocity(angVel);
+	}
+	
+	private void processWeapons()
+	{
+		for(IWeapon weapon : getControlledObject().getWeapons())
+			executeWeaponLogic(weapon);
+	}
+	
+	private void executeWeaponLogic(final IWeapon p_weapon)
+	{
+		if(p_weapon.hasToCooldown())
+			p_weapon.decreaseCooldown();
+		if(p_weapon.shouldFire())
+		{
+			if(!p_weapon.hasToCooldown())
+				fireWeapon(p_weapon);
+			else
+				p_weapon.fire(false);
+		}
+	}
+	
+	private void fireWeapon(final IWeapon p_weapon)
+	{
+		if(p_weapon instanceof LaserCannon)
+			spawnLaserShot();
+		
+		p_weapon.fire(false);
+		p_weapon.setCooldown(p_weapon.getMaxCooldown());
+	}
+	
+	private void spawnLaserShot()
+	{
+		float direction = getControlledObject().getDirection();
+		float dx = (float) Math.cos(direction);
+		float dy = (float) Math.sin(direction);
+		
+		LaserShot shot = new LaserShot();
+		shot.createBody(getSpace().getPhysicsWorld());
+		
+		Vec2 position = new Vec2(getControlledObject().getPosition());
+		float distance = getControlledObject().getRadius() + shot.getLength() / 2;
+		position.x += (dx * distance);
+		position.y += (dy * distance);
+		shot.getBody().setTransform(position, direction);
+		
+		shot.getVelocity().set(dx * shot.getMaxVelocity(), dy * shot.getMaxVelocity());
+		getSpace().addObject(shot);
 	}
 
 	@Override
@@ -74,5 +126,11 @@ public class RocketController extends AObjectController<IRocket> implements IRoc
 	public void stopAccelerate()
 	{
 		getControlledObject().setAccelerateForce(0);
+	}
+	
+	@Override
+	public void fireLaserCannon()
+	{
+		getControlledObject().getWeapon(Rocket.LASERCANNON).fire(true);
 	}
 }

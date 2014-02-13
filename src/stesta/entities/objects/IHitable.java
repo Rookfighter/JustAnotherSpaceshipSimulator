@@ -4,6 +4,7 @@ public interface IHitable {
 
 	int getLifePoints();
 	void setLifePoints(final int p_lifePoints);
+	void maximizeLifePoints();
 	
 	void setMaxLifePoints(final int p_lifePoints);
 	int getMaxLifePoints();

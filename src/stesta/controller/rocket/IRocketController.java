@@ -12,4 +12,6 @@ public interface IRocketController extends IObjectController<IRocket> {
 	
 	void accelerate();
 	void stopAccelerate();
+	
+	void fireLaserCannon();
 }

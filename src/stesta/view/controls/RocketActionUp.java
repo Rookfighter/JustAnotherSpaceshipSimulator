@@ -4,13 +4,13 @@ import java.awt.event.KeyEvent;
 
 public class RocketActionUp extends ARocketAction{
 
-	public RocketActionUp(RocketKeyContainer p_keyContainer)
+	public RocketActionUp(final RocketKeyContainer p_keyContainer)
 	{
 		super(p_keyContainer);
 	}
 
 	@Override
-	public void process(KeyEvent p_event)
+	public void process(final KeyEvent p_event)
 	{
 		switch(p_event.getKeyCode())
 		{
@@ -22,6 +22,10 @@ public class RocketActionUp extends ARocketAction{
 				break;
 			case KeyEvent.VK_W:
 				stopAccelerating();
+				break;
+			case KeyEvent.VK_SPACE:
+				fireLaserCannon();
+				break;
 		}
 	}
 
@@ -39,6 +43,11 @@ public class RocketActionUp extends ARocketAction{
 	private void stopTurningLeft()
 	{
 		getRocketController().stopTurnLeft();
+	}
+	
+	private void fireLaserCannon()
+	{
+		getRocketController().fireLaserCannon();
 	}
 
 

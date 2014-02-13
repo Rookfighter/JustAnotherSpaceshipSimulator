@@ -1,7 +1,9 @@
 package stesta.entities.world.classes;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import lib.utils.integer.Dimension2DI;
 
@@ -30,6 +32,8 @@ public class Space implements ISpace {
 	private List<ISpaceObject> toAdd;
 	private List<ISpaceObject> toRemove;
 	
+	private Set<IAsteroid> toSplit;
+	
 	private float timeStep;
 
 	public Space()
@@ -47,6 +51,7 @@ public class Space implements ISpace {
 		objectList = new LinkedList<ISpaceObject>();
 		toAdd = new LinkedList<ISpaceObject>();
 		toRemove = new LinkedList<ISpaceObject>();
+		toSplit = new HashSet<IAsteroid>();
 		initPhysicsWorld();
 	}
 	
@@ -79,13 +84,13 @@ public class Space implements ISpace {
 	}
 
 	@Override
-	public void addObject(ISpaceObject p_object)
+	public void addObject(final ISpaceObject p_object)
 	{
 		toAdd.add(p_object);
 	}
 
 	@Override
-	public void removeObject(ISpaceObject p_object)
+	public void removeObject(final ISpaceObject p_object)
 	{
 		toRemove.add(p_object);
 	}
@@ -98,7 +103,7 @@ public class Space implements ISpace {
 		toAdd.clear();
 	}
 	
-	private void add(ISpaceObject p_object)
+	private void add(final ISpaceObject p_object)
 	{
 		if(p_object instanceof IAsteroid)
 			asteroidList.add((IAsteroid) p_object);
@@ -116,13 +121,13 @@ public class Space implements ISpace {
 		toRemove.clear();
 	}
 	
-	private void remove(ISpaceObject p_object)
+	private void remove(final ISpaceObject p_object)
 	{
 		physicsWorld.destroyBody(p_object.getBody());
 		if(p_object instanceof IAsteroid)
-			asteroidList.remove((IAsteroid) p_object);
+			asteroidList.remove(p_object);
 		else if(p_object instanceof IRocket)
-			rocketList.remove((IRocket) p_object);
+			rocketList.remove(p_object);
 		else
 			miscObjectList.remove(p_object);
 	}
@@ -151,7 +156,7 @@ public class Space implements ISpace {
 	}
 
 	@Override
-	public void setTimeStep(float p_secs)
+	public void setTimeStep(final float p_secs)
 	{
 		if(p_secs <= 0)
 			throw new IllegalArgumentException("TimeStep of Space cannot be zero or negative.");
@@ -162,6 +167,18 @@ public class Space implements ISpace {
 	public float getTimeStep()
 	{
 		return timeStep;
+	}
+
+	@Override
+	public void splitAsteroid(final IAsteroid p_asteroid)
+	{
+		toSplit.add(p_asteroid);
+	}
+
+	@Override
+	public Set<IAsteroid> asteroidsToSplit()
+	{
+		return toSplit;
 	}
 
 }

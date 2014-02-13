@@ -6,7 +6,10 @@ import org.jbox2d.dynamics.contacts.Contact;
 
 import stesta.controller.ISpaceContactListener;
 import stesta.entities.objects.IAsteroid;
+import stesta.entities.objects.IHitable;
 import stesta.entities.objects.IRocket;
+import stesta.entities.objects.ISpaceObject;
+import stesta.entities.weapons.IProjectile;
 import stesta.entities.world.ISpace;
 
 public class SpaceContactListener implements ISpaceContactListener{
@@ -27,26 +30,65 @@ public class SpaceContactListener implements ISpaceContactListener{
 	}
 	
 	@Override
-	public void beginContact(Contact p_contact)
+	public void beginContact(final Contact p_contact)
 	{
+		checkProjectileCollision(p_contact);
+	}
+	
+	private void checkProjectileCollision(final Contact p_contact)
+	{
+		if(p_contact.getFixtureA().getBody().getUserData() instanceof IProjectile &&
+		   p_contact.getFixtureB().getBody().getUserData() instanceof ISpaceObject)
+		{
+			p_contact.setEnabled(false);
+			processProjectileCollision( (IProjectile) p_contact.getFixtureA().getBody().getUserData(), (ISpaceObject) p_contact.getFixtureB().getBody().getUserData());
+		}
+		else if(p_contact.getFixtureB().getBody().getUserData() instanceof IProjectile &&
+				p_contact.getFixtureA().getBody().getUserData() instanceof ISpaceObject)
+		{
+			p_contact.setEnabled(false);
+			processProjectileCollision( (IProjectile) p_contact.getFixtureB().getBody().getUserData(), (ISpaceObject) p_contact.getFixtureA().getBody().getUserData());
+		}
+	}
+	
+	private void processProjectileCollision(final IProjectile p_projectile, final ISpaceObject p_object)
+	{
+		if(p_object instanceof IHitable)
+		{
+			IHitable hitableObject = (IHitable) p_object;
+			hitableObject.decLifePoints(p_projectile.getDamage());
+			checkHitableDeath(hitableObject);
+		}
 		
+		getSpace().removeObject(p_projectile);
+	}
+	
+	private void checkHitableDeath(final IHitable p_hitable)
+	{
+		if(p_hitable.isDead())
+		{
+			if(p_hitable instanceof IAsteroid)
+				space.splitAsteroid((IAsteroid) p_hitable);
+			else if(p_hitable instanceof ISpaceObject)
+				space.removeObject((ISpaceObject) p_hitable);
+		}
 	}
 
 	@Override
-	public void endContact(Contact p_contact)
+	public void endContact(final Contact p_contact)
 	{
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void postSolve(Contact p_contact, ContactImpulse p_impulse)
+	public void postSolve(final Contact p_contact, final ContactImpulse p_impulse)
 	{
 		checkAsteroidRocketCollision(p_contact, p_impulse);
 		checkRocketCollision(p_contact, p_impulse);
 	}
 	
-	private void checkAsteroidRocketCollision(Contact p_contact, ContactImpulse p_impulse)
+	private void checkAsteroidRocketCollision(final Contact p_contact, final ContactImpulse p_impulse)
 	{
 		//cast the right body data
 		if(p_contact.getFixtureA().getBody().getUserData() instanceof IRocket &&
@@ -65,7 +107,7 @@ public class SpaceContactListener implements ISpaceContactListener{
 		}**/
 	}
 	
-	private void checkRocketCollision(Contact p_contact, ContactImpulse p_impulse)
+	private void checkRocketCollision(final Contact p_contact, final ContactImpulse p_impulse)
 	{
 		if(p_contact.getFixtureA().getBody().getUserData() instanceof IRocket &&
 		   p_contact.getFixtureB().getBody().getUserData() instanceof IRocket)
@@ -76,20 +118,18 @@ public class SpaceContactListener implements ISpaceContactListener{
 		}
 	}
 	
-	private void processRocketCollision(IRocket p_rocket,ContactImpulse p_impulse)
+	private void processRocketCollision(final IRocket p_rocket,final ContactImpulse p_impulse)
 	{
 		if(p_rocket.getLifePoints() > 0)
 		{
 			float damage = getRocketDamageExponential(p_impulse);
 			
-			System.out.printf("Damage: %.2f \n", damage);
 			p_rocket.decLifePoints((int) damage);
-			if(p_rocket.isDead())
-				space.removeObject(p_rocket);
+			checkHitableDeath(p_rocket);
 		}
 	}
 	
-	private float getRocketDamageExponential(ContactImpulse p_impulse)
+	private float getRocketDamageExponential(final ContactImpulse p_impulse)
 	{
 		float impulseSum = 0.0f;
 		for(float impulse : p_impulse.normalImpulses)
@@ -100,14 +140,14 @@ public class SpaceContactListener implements ISpaceContactListener{
 	}
 	
 	@Override
-	public void preSolve(Contact p_contact, Manifold p_manifold)
+	public void preSolve(final Contact p_contact, final Manifold p_manifold)
 	{
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void setSpace(ISpace p_space)
+	public void setSpace(final ISpace p_space)
 	{
 		space = p_space;
 	}

@@ -40,7 +40,7 @@ public class SpaceLifebar extends AHudElement implements ILifebar {
 	}
 	
 	@Override
-	public void draw(Graphics p_graphic)
+	public void draw(final Graphics p_graphic)
 	{
 		Color color = p_graphic.getColor();
 		
@@ -71,19 +71,22 @@ public class SpaceLifebar extends AHudElement implements ILifebar {
 	}
 
 	@Override
-	public void setMax(int p_value)
+	public void setMax(final int p_value)
 	{
 		maxValue = p_value;
 	}
 
 	@Override
-	public void setValue(int p_value)
+	public void setValue(final int p_value)
 	{
-		value = p_value;
+		if(p_value >= 0)
+			value = p_value;
+		else
+			value = 0;
 	}
 
 	@Override
-	public void setDimension(Dimension2DI p_dimension)
+	public void setDimension(final Dimension2DI p_dimension)
 	{
 		dimension = p_dimension;
 	}
@@ -95,7 +98,7 @@ public class SpaceLifebar extends AHudElement implements ILifebar {
 	}
 
 	@Override
-	public void setPosition(Position2DI p_position)
+	public void setPosition(final Position2DI p_position)
 	{
 		position = p_position;
 		
@@ -108,7 +111,7 @@ public class SpaceLifebar extends AHudElement implements ILifebar {
 	}
 	
 	@Override
-	public void setHudDimension(Dimension2DI p_dimension)
+	public void setHudDimension(final Dimension2DI p_dimension)
 	{
 		super.setHudDimension(p_dimension);
 		updatePosition();

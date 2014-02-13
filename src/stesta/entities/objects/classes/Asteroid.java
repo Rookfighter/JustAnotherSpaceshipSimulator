@@ -5,22 +5,25 @@ import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.FixtureDef;
 
-import stesta.entities.objects.AMovingSpaceObject;
+import stesta.entities.objects.AHitableMovingSpaceObject;
 import stesta.entities.objects.IAsteroid;
 
-public class Asteroid extends AMovingSpaceObject implements IAsteroid{
+public class Asteroid extends AHitableMovingSpaceObject implements IAsteroid{
 
-	private static final float DEF_RADIUS = 0.5f;
+	public static final float MIN_RADIUS = 0.6f;
+	
+	private static final float DEF_RADIUS = MIN_RADIUS;
 	private static final float DEF_FRICTION = 0.3f;
 	private static final float DEF_DENSITY = 2.5f;
 	private static final float DEF_RESTITUTION = 0.3f;
+	private static final int DEF_LIFE_POINTS = 1200;
 	
 	private float radius;
 	
 	public Asteroid()
 	{
 		super();
-		radius = DEF_RADIUS;
+		setRadius(DEF_RADIUS);
 	}
 	
 	@Override
@@ -32,6 +35,8 @@ public class Asteroid extends AMovingSpaceObject implements IAsteroid{
 			throw new IllegalArgumentException("Asteroid radius cannot be zero or negative.");
 		
 		radius = p_radius;
+		setMaxLifePoints((int) (radius * DEF_LIFE_POINTS));
+		maximizeLifePoints();
 	}
 	
 	@Override
@@ -52,20 +57,19 @@ public class Asteroid extends AMovingSpaceObject implements IAsteroid{
 	}
 
 	@Override
-	protected FixtureDef getFixtureDef()
+	protected FixtureDef[] getFixtureDef()
 	{
-		FixtureDef result = new FixtureDef();
+		FixtureDef[] result = new FixtureDef[1];
+		result[0] = new FixtureDef();
 		CircleShape cs = new CircleShape();
 		cs.setRadius(radius);
 		
-		result.shape = cs;
-		result.density = DEF_DENSITY;
-		result.restitution = DEF_RESTITUTION;
-		result.friction = DEF_FRICTION;
+		result[0].shape = cs;
+		result[0].density = DEF_DENSITY;
+		result[0].restitution = DEF_RESTITUTION;
+		result[0].friction = DEF_FRICTION;
 		
 		return result;
 	}
-
-	
 
 }
